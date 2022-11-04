@@ -11,6 +11,7 @@ private:
 public:
     Ciff() = default;
     void ParseCiff(std::vector<char> data);
+    void LogCiff();
     ~Ciff() = default;
 };
 

@@ -1,6 +1,7 @@
 #ifndef CAFF_H
 #define CAFF_H
 
+#include <iostream> // TODO delete after testing
 #include "CaffHeader.h"
 #include "CaffCredits.h"
 #include "CaffAnimation.h"
@@ -14,6 +15,7 @@ public:
     Caff() = default;
     void ParseCaffBlock(char id, std::vector<char> data);
     void CheckCaffBlocks();
+    void LogCaff();
     ~Caff() = default;
 };
 

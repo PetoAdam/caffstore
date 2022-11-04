@@ -5,7 +5,7 @@
 #include <string>
 #include <stdexcept>
 
-std::vector<char> cutFromVector(std::vector<char>& data, unsigned int begin, unsigned int size);
+std::vector<char> cutFromVector(std::vector<char>& data, unsigned int begin, unsigned int size, std::string field_name);
 
 uint8_t vectorToInt8(std::vector<char> data);
 

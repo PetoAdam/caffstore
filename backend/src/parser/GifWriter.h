@@ -1,1 +1,9 @@
-// TODO CAFF->GIF
+#ifndef GIF_WRITER_H
+#define GIF_WRITER_H
+
+//#include "gif.h" // TODO
+#include "Caff.h"
+
+void writeGif(std::string filename, const Caff& caff);
+
+#endif //GIF_WRITER_H

@@ -1,6 +1,7 @@
 #ifndef CAFF_HEADER_H
 #define CAFF_HEADER_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include "VectorHandler.h"
@@ -14,6 +15,7 @@ private:
 public:
     CaffHeader() = default;
     void ParseCaffHeader(std::vector<char> data);
+    void LogCaffHeader();
     bool IsParsed(){return parsed;}
     void SetParsed(bool p){parsed = p;}
     uint64_t GetNumAnim(){return num_anim;}

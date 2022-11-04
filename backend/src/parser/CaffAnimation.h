@@ -10,6 +10,7 @@ private:
 public:
     CaffAnimation() = default;
     void ParseCaffAnimation(std::vector<char> data);
+    void LogCaffAnimation();
     ~CaffAnimation() = default;
 };
 

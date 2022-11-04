@@ -3,14 +3,16 @@
 
 #include "Caff.h"
 #include "FileReader.h"
+#include "GifWriter.h"
 #include "VectorHandler.h"
 
 class Converter{
 private:
     std::string input_file;
+    std::string output_file;
     Caff caff{};
 public:
-    Converter(std::string input): input_file(input){}
+    Converter(std::string input, std::string output): input_file(input), output_file(output){}
     void convert();
     ~Converter() = default;
 };

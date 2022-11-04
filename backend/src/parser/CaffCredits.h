@@ -1,6 +1,7 @@
 #ifndef CAFF_CREDITS_H
 #define CAFF_CREDITS_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -22,6 +23,7 @@ private:
 public:
     CaffCredits() = default;
     void ParseCaffCredits(std::vector<char> data);
+    void LogCaffCredits();
     bool IsParsed(){return parsed;}
     void SetParsed(bool p){parsed = p;}
     ~CaffCredits() = default;

@@ -6,10 +6,16 @@ int main(int argc, const char** argv) {
         std::cout << "Input file not given" << std::endl;;
         return -1;
     }
+    if (argc < 3) {
+        std::cout << "Output file name not given" << std::endl;;
+        return -1;
+    }
     std::string input_file = argv[1];
+    // TODO check format (.caff)
+    std::string output_file = argv[2];
 
     try {
-        Converter converter(input_file);
+        Converter converter(input_file, output_file);
         converter.convert();
     }
     catch (const std::exception& e) {
