@@ -17,11 +17,11 @@ void CaffCredits::ParseCaffCredits(std::vector<char> data){
         throw std::runtime_error("The creation day in CAFF CREDITS is not valid");
 
     hour = vectorToInt8(cutFromVector(data, 0, 1, "CAFF CREDITS -> hour"));
-    if(hour > 24)
+    if(hour >= 24)
         throw std::runtime_error("The creation hour in CAFF CREDITS is not valid");
 
     minute = vectorToInt8(cutFromVector(data, 0, 1, "CAFF CREDITS -> minute"));
-    if(minute > 60)
+    if(minute >= 60)
         throw std::runtime_error("The creation minute in CAFF CREDITS is not valid");
 
     if(!IsDateValid())
