@@ -33,6 +33,8 @@ void CiffHeader::ParseTags(std::vector<char>& data){
         char first = cutFromVector(data, 0, 1, "CIFF HEADER -> tags")[0];
         std::string tag;
         while(first != '\0'){
+            if(first == '\n')
+                throw std::runtime_error("Tag can't be multiline in CIFF HEADER");
             tag.push_back(first);
             first = cutFromVector(data, 0, 1, "CIFF HEADER -> tags")[0];
         }
