@@ -2,7 +2,10 @@
 
 std::vector<char> readFile(std::string input_file){
     //Open the file
-    std::ifstream file(input_file, std::ios::binary);
+    std::ifstream file;
+    file.open(input_file, std::ios::binary);
+    if(!file.is_open())
+        throw std::runtime_error("Cannot open input file: " + input_file);
 
     // Stop eating new lines in binary mode
     file.unsetf(std::ios::skipws);
@@ -18,5 +21,6 @@ std::vector<char> readFile(std::string input_file){
             std::istream_iterator<char>(file),
             std::istream_iterator<char>());
 
+    file.close();
     return data;
 }
