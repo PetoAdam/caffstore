@@ -10,6 +10,7 @@ private:
 public:
     CaffAnimation() = default;
     void ParseCaffAnimation(std::vector<char> data);
+    uint64_t GetCiffSize(){return ciff.GetContentSize();}
     void LogCaffAnimation();
     ~CaffAnimation() = default;
 };

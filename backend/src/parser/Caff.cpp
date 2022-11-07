@@ -9,12 +9,31 @@ void Caff::ParseCaffBlock(char id, std::vector<char> data){
             caff_credits.ParseCaffCredits(std::move(data));
             break;
         case 3:
+            CheckAnimNum();
             caff_animations.push_back(CaffAnimation());
             caff_animations.back().ParseCaffAnimation(std::move(data));
             break;
         default:
             throw std::runtime_error("Invalid ID in Caff block: " + std::to_string(id));
             break;
+    }
+}
+
+void Caff::CheckAnimNum(){
+    if(caff_header.IsParsed() && caff_animations.size() >= caff_header.GetNumAnim()){
+        throw std::runtime_error("There are more CAFF ANIMATION blocks than there should be based on the CAFF HEADER");
+    }
+}
+
+void Caff::CheckCiffSizes(){
+    if(caff_animations.size() > 1){
+        uint64_t ciff_size = caff_animations[0].GetCiffSize();
+        for (size_t i = 1; i < caff_animations.size(); i++)
+        {
+            if(caff_animations[0].GetCiffSize() != ciff_size)
+                std::cout << "WARNING: The CIFF files do not match in size";
+        }
+        
     }
 }
 

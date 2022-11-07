@@ -11,6 +11,8 @@ private:
     CaffHeader caff_header{};
     CaffCredits caff_credits{};
     std::vector<CaffAnimation> caff_animations{};
+    void CheckAnimNum();
+    void CheckCiffSizes();
 public:
     Caff() = default;
     void ParseCaffBlock(char id, std::vector<char> data);

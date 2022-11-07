@@ -11,6 +11,7 @@ private:
 public:
     Ciff() = default;
     void ParseCiff(std::vector<char> data);
+    uint64_t GetContentSize(){return ciff_header.GetContentSize();}
     void LogCiff();
     ~Ciff() = default;
 };
