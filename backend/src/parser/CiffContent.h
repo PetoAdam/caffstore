@@ -14,6 +14,7 @@ private:
 public:
     CiffContent() = default;
     void ParseCiffContent(uint64_t content_size, std::vector<char> data);
+    std::vector<RGB> GetPixels(){return pixels;}
     ~CiffContent() = default;
 };
 

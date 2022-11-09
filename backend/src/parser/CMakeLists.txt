@@ -10,8 +10,8 @@ add_executable(parser
     Converter.cpp
     FileReader.h
     FileReader.cpp 
-    GifWriter.h
-    GifWriter.cpp 
+    GifCreator.h
+    GifCreator.cpp 
     VectorHandler.h
     VectorHandler.cpp
     Caff.h

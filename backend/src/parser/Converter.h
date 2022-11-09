@@ -3,7 +3,7 @@
 
 #include "Caff.h"
 #include "FileReader.h"
-#include "GifWriter.h"
+#include "GifCreator.h"
 #include "VectorHandler.h"
 
 class Converter{
