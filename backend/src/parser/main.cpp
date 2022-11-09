@@ -22,7 +22,7 @@ int main(int argc, const char** argv) {
         converter.convert();
     }
     catch (const std::exception& e) {
-        std::cout << "Conversion faild with error: " << e.what() << std::endl;
+        std::cout << "Conversion failed with error: " << e.what() << std::endl;
         return -1;
     }
     return 0;

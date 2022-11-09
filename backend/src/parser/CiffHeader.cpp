@@ -10,7 +10,7 @@ void CiffHeader::ParseCiffHeader(std::vector<char> data){
     height = vectorToInt64(cutFromVector(data, 0, 8, "CIFF HEADER -> height"));
 
     if(content_size != width*height*3)
-        throw std::runtime_error("The conent_size field in CIFF HEADER is not valid");
+        throw std::runtime_error("The content_size field in CIFF HEADER is not valid");
 
     ParseCaption(data);
 
