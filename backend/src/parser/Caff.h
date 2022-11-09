@@ -1,7 +1,7 @@
 #ifndef CAFF_H
 #define CAFF_H
 
-#include <iostream> // TODO delete after testing
+#include <iostream>
 #include "CaffHeader.h"
 #include "CaffCredits.h"
 #include "CaffAnimation.h"

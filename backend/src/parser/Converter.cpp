@@ -7,7 +7,7 @@ void Converter::convert(){
     // Parsing
     while(!data.empty()){
         char id = cutFromVector(data, 0, 1, "block id")[0];
-        if (id == 0) { // TODO it's ugly
+        if (id == 0) {
             bool is_zero = true;
             for (int i = 0; i < data.size(); i++)
                 if (data[i] != 0) is_zero = false;

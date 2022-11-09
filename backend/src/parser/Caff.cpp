@@ -44,7 +44,7 @@ void Caff::CheckCaffBlocks(){
         throw std::runtime_error("The CAFF file does not contain the CAFF CREDITS block");
     if(caff_header.GetNumAnim() != caff_animations.size())
         throw std::runtime_error("The num_anim value in the CAFF HEADER does not match the number of CAFF ANIMATION blocks");
-    //TODO check ciff sizes (must be equal?)
+    CheckCiffSizes();
 }
 
 void Caff::LogCaff() {

@@ -1,7 +1,7 @@
 #ifndef CIFF_CONTENT_H
 #define CIFF_CONTENT_H
 
-#include <iostream> // TODO delete after testing
+#include <iostream>
 #include <vector>
 #include "RGB.h"
 #include "VectorHandler.h"
