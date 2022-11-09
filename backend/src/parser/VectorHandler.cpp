@@ -17,29 +17,29 @@ uint8_t vectorToInt8(std::vector<char> data){
     if(data.size() != 1)
         throw std::runtime_error("Invalid data for uint8_t conversion");
  
-    return uint8_t((unsigned char)(data[0]));
+    return uint8_t((uint8_t)(unsigned char)(data[0]));
 }
 
 uint16_t vectorToInt16(std::vector<char> data){
     if(data.size() != 2)
         throw std::runtime_error("Invalid data for uint16_t conversion");
 
-    return uint16_t((unsigned char)(data[1]) << 8 |
-                    (unsigned char)(data[0]));
+    return uint16_t((uint16_t)(unsigned char)(data[1]) << 8 |
+                    (uint16_t)(unsigned char)(data[0]));
 }
 
 uint64_t vectorToInt64(std::vector<char> data){
     if(data.size() != 8)
         throw std::runtime_error("Invalid data for uint64_t conversion");
 
-    return uint64_t((unsigned char)(data[7]) << 56 |
-                    (unsigned char)(data[6]) << 48 |
-                    (unsigned char)(data[5]) << 40 |
-                    (unsigned char)(data[4]) << 32 |
-                    (unsigned char)(data[3]) << 24 |
-                    (unsigned char)(data[2]) << 16 |
-                    (unsigned char)(data[1]) << 8  |
-                    (unsigned char)(data[0]));
+    return uint64_t((uint64_t)(unsigned char)(data[7]) << 56 |
+                    (uint64_t)(unsigned char)(data[6]) << 48 |
+                    (uint64_t)(unsigned char)(data[5]) << 40 |
+                    (uint64_t)(unsigned char)(data[4]) << 32 |
+                    (uint64_t)(unsigned char)(data[3]) << 24 |
+                    (uint64_t)(unsigned char)(data[2]) << 16 |
+                    (uint64_t)(unsigned char)(data[1]) << 8  |
+                    (uint64_t)(unsigned char)(data[0]));
 }
 
 std::string vectorToString(std::vector<char> data){
