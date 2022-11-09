@@ -18,6 +18,7 @@ public:
     void ParseCaffBlock(char id, std::vector<char> data);
     void CheckCaffBlocks();
     void LogCaff();
+    std::vector<CaffAnimation> GetAnimations(){return caff_animations;}
     ~Caff() = default;
 };
 

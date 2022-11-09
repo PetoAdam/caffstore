@@ -24,6 +24,8 @@ public:
     void LogCiffHeader();
     void SetHeaderSize(uint64_t hs){header_size = hs;}
     uint64_t GetContentSize(){return content_size;}
+    uint64_t GetWidth(){return width;}
+    uint64_t GetHeight(){return height;}
     ~CiffHeader() = default;
 };
 
