@@ -7,22 +7,29 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { useNavigate } from "react-router-dom";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import logo from "../assets/logo.png";
 import { Link, ThemeProvider } from "@mui/material";
-import { products, signin, upload, profile, signup } from "../constants/pages";
+import { Pages } from "../constants/pages";
 import { theme } from "../constants/theme";
+import { useStore } from "../stores";
 
-const pages = [products, upload];
-const settings = [profile, signin, signup];
+const pages = [Pages.products, Pages.upload];
+const settingsWithoutLogin = [Pages.signin, Pages.signup];
+const settingsWithLogin = [Pages.profile, Pages.logout];
 
-export function ResponsiveAppBar() {
+type Props = {
+  isAdmin?: boolean;
+};
+
+export const ResponsiveAppBar: React.FC<Props> = ({ isAdmin }) => {
+  const { userStore } = useStore();
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -85,27 +92,9 @@ export function ResponsiveAppBar() {
               ></Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              href=""
-              sx={{
-                mr: 2,
-                display: { xs: "flex", md: "none" },
-                flexGrow: 1,
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              LOGO
-            </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
-                <Link href={`/${page}`} key={page}>
+                <Link href={`/${page.toLowerCase()}`} key={page}>
                   <Button
                     onClick={() => handleCloseNavMenu(page)}
                     sx={{ my: 2, color: "white", display: "block" }}
@@ -117,39 +106,69 @@ export function ResponsiveAppBar() {
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <Link href={`/${setting}`} key={setting}>
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  </Link>
-                ))}
-              </Menu>
+              {!isAdmin && (
+                <>
+                  {" "}
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <AccountCircleIcon fontSize="large" />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: "45px" }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    {!userStore.isLoggedIn &&
+                      settingsWithoutLogin.map((setting) => (
+                        <Link href={`/${setting.toLowerCase()}`} key={setting}>
+                          <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                            <Typography textAlign="center">
+                              {setting}
+                            </Typography>
+                          </MenuItem>
+                        </Link>
+                      ))}
+
+                    {userStore.isLoggedIn &&
+                      settingsWithLogin.map((setting) => (
+                        <Link href={`/${setting.toLowerCase()}`} key={setting}>
+                          <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                            <Typography textAlign="center">
+                              {setting}
+                            </Typography>
+                          </MenuItem>
+                        </Link>
+                      ))}
+                  </Menu>
+                </>
+              )}
+              {isAdmin && (
+                <Link
+                  href={
+                    userStore.isLoggedIn ? "/admin/signout" : "/admin/signin"
+                  }
+                >
+                  <Button sx={{ my: 2, color: "white", display: "block" }}>
+                    {userStore.isLoggedIn ? "Signout" : "Signin"}
+                  </Button>
+                </Link>
+              )}
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
     </ThemeProvider>
   );
-}
+};

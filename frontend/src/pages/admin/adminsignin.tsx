@@ -10,17 +10,18 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "../constants/theme";
+import { theme } from "../../constants/theme";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../../firebase";
 import { Alert, Snackbar } from "@mui/material";
-import { useStore } from "../stores";
+import { doc, getDoc } from "firebase/firestore";
+import { useStore } from "../../stores";
 import { useNavigate } from "react-router-dom";
 
-export function SignIn() {
+export function AdminSignIn() {
   const { userStore } = useStore();
   const navigate = useNavigate();
 
@@ -35,14 +36,21 @@ export function SignIn() {
     event.preventDefault();
     if (email && password)
       signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          userStore.setIsLoggedIn(true);
-          navigate("/");
+        .then(async (userCredential) => {
+          // Signed in
+
+          const user = userCredential.user;
+
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.data()?.isAdmin) {
+            userStore.setIsAdmin(true);
+            navigate("/admin");
+          } else setEmailError("You are not an admin");
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorMessage);
+          console.log(error.message);
         });
     else if (!email) setEmailError("Email is missing");
     if (!password) setPasswordError("Password or RePassword is missing");
@@ -55,9 +63,7 @@ export function SignIn() {
           setOpen(true);
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorMessage);
+          console.log(error.message);
         });
     else if (!email) setEmailError("Email is missing");
   };
@@ -66,6 +72,7 @@ export function SignIn() {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+
         <Box
           sx={{
             marginTop: 8,
@@ -133,11 +140,6 @@ export function SignIn() {
                 Forgot password?
               </Link>
             </Grid>
-            <Grid item>
-              <Link href="/Signup" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
           </Grid>
           <Snackbar
             open={open}
@@ -149,7 +151,7 @@ export function SignIn() {
               severity="success"
               sx={{ width: "100%" }}
             >
-              The password reset email was sent
+              This is a success message!
             </Alert>
           </Snackbar>
         </Box>

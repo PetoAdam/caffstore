@@ -1,5 +1,8 @@
-export const products = "Products";
-export const upload = "Upload";
-export const profile = "Profile";
-export const signin = "Signin";
-export const signup = "Signup";
+export enum Pages {
+  products = "Products",
+  upload = "Upload",
+  profile = "Profile",
+  signin = "Signin",
+  signup = "Signup",
+  logout = "Signout",
+}

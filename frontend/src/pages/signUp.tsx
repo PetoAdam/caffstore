@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -16,9 +14,13 @@ import { theme } from "../constants/theme";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import { truncate } from "fs";
+import { useStore } from "../stores";
+import { useNavigate } from "react-router-dom";
 
 export function SignUp() {
+  const { userStore } = useStore();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
@@ -35,7 +37,10 @@ export function SignUp() {
           setDoc(doc(db, "users", user.uid), {
             email: user.email,
             uid: user.uid,
-          }).then(() => console.log(user));
+          }).then(() => {
+            userStore.setIsLoggedIn(true);
+            navigate("/");
+          });
         })
         .catch((error) => {
           const errorCode = error.code;

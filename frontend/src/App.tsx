@@ -1,25 +1,66 @@
-import React, { Component } from "react";
-import { Link, BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore/lite";
-import { getAuth } from "firebase/auth";
-
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { ResponsiveAppBar } from "./components/responsiveAppBar";
-import { signin, signup } from "./constants/pages";
+import { Pages } from "./constants/pages";
+import { AdminSignIn } from "./pages/admin/adminsignin";
+import { SignOut } from "./pages/signout";
 import { SignIn } from "./pages/signIn";
 import { SignUp } from "./pages/signUp";
-import { firebaseConfig } from "./firebase";
+import { CustomerLayout } from "./routing/CustomerLayout";
+import { AdminLayout, ProtectedAdminLayout } from "./routing/AdminLayout";
+import { useStore } from "./stores";
+import { useEffect, useState } from "react";
+import { auth, db } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 function App() {
+  const { userStore } = useStore();
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      setLoggedIn(true);
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.data()?.isAdmin) setIsAdmin(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
+
+  useEffect(() => {
+    if (loggedIn && isAdmin) userStore.setIsAdmin(true);
+    else if (loggedIn) userStore.setIsLoggedIn(true);
+    else userStore.setIsLoggedIn(false);
+  }, [loggedIn]);
+
   return (
     <div className="App">
-      <ResponsiveAppBar />
       <Router>
         <Routes>
-          <Route path="/" element={<></>} />
-          <Route path={`/${signin}`} element={<SignIn />} />
-          <Route path={`/${signup}`} element={<SignUp />} />
+          <Route path="/" element={<CustomerLayout />}>
+            <Route
+              path={`${Pages.signin.toLowerCase()}`}
+              element={<SignIn />}
+            />
+            <Route
+              path={`${Pages.signup.toLowerCase()}`}
+              element={<SignUp />}
+            />
+            <Route
+              path={`${Pages.logout.toLowerCase()}`}
+              element={<SignOut />}
+            />
+          </Route>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path={`signin`} element={<AdminSignIn />} />
+            <Route
+              element={<ProtectedAdminLayout isAdmin={userStore.isAdmin} />}
+            >
+              <Route path={`signout`} element={<SignOut />} />
+            </Route>
+          </Route>
         </Routes>
       </Router>
     </div>
