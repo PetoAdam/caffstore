@@ -4,7 +4,7 @@ import {
   User,
   UserCredential,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { makeAutoObservable } from "mobx";
 import { makePersistable } from "mobx-persist-store";
 import { auth, db } from "../firebase";
@@ -48,8 +48,16 @@ export default class UserStore {
       if (user) this.user = user;
       const docRef = doc(db, "users", user!.uid);
       const docSnap = await getDoc(docRef);
-
-      if (docSnap.data()?.isAdmin) this.setIsAdmin(true);
+      if (docSnap.exists()) {
+        if (docSnap.data()?.isAdmin) this.setIsAdmin(true);
+      } else {
+        setDoc(doc(db, "users", user!.uid), {
+          email: user!.email,
+          username: user!.email,
+          isAdmin: false,
+          uid: user!.uid,
+        });
+      }
     }
   }
 

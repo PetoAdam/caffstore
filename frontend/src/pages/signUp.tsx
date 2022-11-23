@@ -40,6 +40,8 @@ export function SignUp() {
           const user = userCredential.user;
           setDoc(doc(db, "users", user.uid), {
             email: user.email,
+            username: user.email,
+            isAdmin: false,
             uid: user.uid,
           }).then(() => {
             userStore.setIsLoggedIn(true);
