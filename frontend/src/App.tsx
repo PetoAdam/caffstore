@@ -12,6 +12,9 @@ import { AdminSignOut } from "./pages/admin/adminSignOut";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { EditUsers } from "./pages/admin/editUsers";
+import { EditProducts } from "./pages/admin/adminProducts";
+import { Products } from "./pages/products";
+import { Upload } from "@mui/icons-material";
 
 function App() {
   const { userStore } = useStore();
@@ -41,6 +44,14 @@ function App() {
               path={`${Pages.logout.toLowerCase()}`}
               element={<SignOut />}
             />
+            <Route
+              path={`${Pages.products.toLowerCase()}`}
+              element={<Products />}
+            />
+            <Route
+              path={`${Pages.upload.toLowerCase()}`}
+              element={<Upload />}
+            />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path={"/admin/signin"} element={<AdminSignIn />} />
@@ -51,6 +62,7 @@ function App() {
           >
             <Route path={`signout`} element={<AdminSignOut />} />
             <Route path={`users`} element={<EditUsers />} />
+            <Route path={`products`} element={<EditProducts />} />
           </Route>
         </Routes>
       </Router>

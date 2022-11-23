@@ -1,10 +1,10 @@
 import { Typography } from "@mui/material";
 import React from "react";
 
-export const EditUsers = () => {
+export const EditProducts = () => {
   return (
     <>
-      <Typography>users</Typography>
+      <Typography>products</Typography>
     </>
   );
 };
