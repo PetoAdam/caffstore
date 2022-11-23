@@ -1,8 +1,10 @@
 import { useEffect } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
+import { useStore } from "../../stores";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../stores";
 
-export const SignOut = () => {
+export const AdminSignOut = () => {
   const { userStore } = useStore();
   const navigate = useNavigate();
 
@@ -11,7 +13,7 @@ export const SignOut = () => {
   };
 
   useEffect(() => {
-    logout().then(() => navigate("/"));
+    logout().then(() => navigate("/admin"));
   }, []);
   return <></>;
 };

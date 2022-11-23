@@ -19,6 +19,7 @@ export const ProtectedAdminLayout: React.FC<Props> = ({ isAdmin }) => {
   if (!isAdmin) return <Navigate to={"/"} replace />;
   return (
     <>
+      <ResponsiveAppBar isAdmin />
       <Outlet />
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,10 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../constants/theme";
-import {
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-} from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { Alert, Snackbar } from "@mui/material";
 import { doc, getDoc } from "firebase/firestore";
@@ -32,26 +29,17 @@ export function AdminSignIn() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  useEffect(() => {
+    if (userStore.isLoggedIn) navigate("/admin");
+  }, []);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (email && password)
-      signInWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
-          // Signed in
-
-          const user = userCredential.user;
-
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.data()?.isAdmin) {
-            userStore.setIsAdmin(true);
-            navigate("/admin");
-          } else setEmailError("You are not an admin");
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+      userStore.login(email, password).then(() => {
+        if (!userStore.isAdmin) setEmailError("You are not an admin");
+        else navigate("/admin");
+      });
     else if (!email) setEmailError("Email is missing");
     if (!password) setPasswordError("Password or RePassword is missing");
   };

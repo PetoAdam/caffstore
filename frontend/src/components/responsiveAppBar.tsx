@@ -18,6 +18,7 @@ import { Link, ThemeProvider } from "@mui/material";
 import { Pages } from "../constants/pages";
 import { theme } from "../constants/theme";
 import { useStore } from "../stores";
+import { observer } from "mobx-react-lite";
 
 const pages = [Pages.products, Pages.upload];
 const settingsWithoutLogin = [Pages.signin, Pages.signup];
@@ -27,7 +28,7 @@ type Props = {
   isAdmin?: boolean;
 };
 
-export const ResponsiveAppBar: React.FC<Props> = ({ isAdmin }) => {
+export const ResponsiveAppBar: React.FC<Props> = observer(({ isAdmin }) => {
   const { userStore } = useStore();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -54,7 +55,10 @@ export const ResponsiveAppBar: React.FC<Props> = ({ isAdmin }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="static">
+      <AppBar
+        position="static"
+        style={{ backgroundColor: isAdmin ? "red" : "green" }}
+      >
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Link href="/">
@@ -171,4 +175,4 @@ export const ResponsiveAppBar: React.FC<Props> = ({ isAdmin }) => {
       </AppBar>
     </ThemeProvider>
   );
-};
+});

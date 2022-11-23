@@ -1,32 +1,59 @@
-import { UserCredential } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  User,
+  UserCredential,
+} from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { makeAutoObservable } from "mobx";
-import { auth } from "../firebase";
+import { makePersistable } from "mobx-persist-store";
+import { auth, db } from "../firebase";
 
 export default class UserStore {
-  constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
-  }
-
   isLoggedIn = false;
 
   isAdmin = false;
 
-  user: Partial<UserCredential> | undefined = undefined;
+  user: User | undefined = undefined;
 
-  setIsLoggedIn(login: boolean) {
-    this.isLoggedIn = login;
-    if (login) this.setUser(auth.currentUser || undefined);
-    else this.setUser(undefined);
-    if (!login) this.setIsAdmin(false);
+  constructor() {
+    makeAutoObservable(this, {}, { autoBind: true });
+    makePersistable(this, {
+      name: "UserStore",
+      properties: ["isLoggedIn", "isAdmin", "user"],
+      storage: window.localStorage,
+    });
   }
 
-  setUser(user: Partial<UserCredential> | undefined) {
-    this.user = user;
+  async login(email: string, password: string) {
+    await signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      console.log(error.message);
+    });
+    await this.setIsLoggedIn(true);
+  }
+
+  async logout() {
+    await signOut(auth).catch((error) => {
+      console.log(error.message);
+    });
+    await this.setIsLoggedIn(false);
+  }
+
+  async setIsLoggedIn(login: boolean) {
+    this.isLoggedIn = login;
+    this.setIsAdmin(false);
+    this.user = undefined;
+    if (login) {
+      const user = auth.currentUser;
+      if (user) this.user = user;
+      const docRef = doc(db, "users", user!.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.data()?.isAdmin) this.setIsAdmin(true);
+    }
   }
 
   setIsAdmin(isAdmin: boolean) {
     this.isAdmin = isAdmin;
-    this.isLoggedIn = isAdmin;
-    this.setUser(auth.currentUser || undefined);
   }
 }

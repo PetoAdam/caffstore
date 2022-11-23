@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -31,19 +31,14 @@ export function SignIn() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  useEffect(() => {
+    if (userStore.isLoggedIn) navigate("/");
+  }, []);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (email && password)
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          userStore.setIsLoggedIn(true);
-          navigate("/");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorMessage);
-        });
+      userStore.login(email, password).then(() => navigate("/"));
     else if (!email) setEmailError("Email is missing");
     if (!password) setPasswordError("Password or RePassword is missing");
   };
