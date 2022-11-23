@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
-import { ResponsiveAppBar } from "../components/responsiveAppBar";
+import { CustomerAppBar } from "../components/appBar";
 
 export const CustomerLayout = () => {
   return (
     <>
-      <ResponsiveAppBar />
+      <CustomerAppBar />
       <Outlet />
     </>
   );

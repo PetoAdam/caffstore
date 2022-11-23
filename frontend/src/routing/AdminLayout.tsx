@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { AdminAppBar } from "../components/adminAppBar";
-import { ResponsiveAppBar } from "../components/responsiveAppBar";
+import { CustomerAppBar } from "../components/appBar";
 
 export const AdminLayout = () => {
   return (

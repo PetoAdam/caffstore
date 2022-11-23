@@ -12,17 +12,18 @@ import MenuItem from "@mui/material/MenuItem";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import logo from "../assets/logo.png";
-import { Link, ThemeProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import { Pages } from "../constants/pages";
 import { theme } from "../constants/theme";
 import { useStore } from "../stores";
 import { observer } from "mobx-react-lite";
+import { Link } from "react-router-dom";
 
 const pages = [Pages.products, Pages.upload];
 const settingsWithoutLogin = [Pages.signin, Pages.signup];
 const settingsWithLogin = [Pages.profile, Pages.logout];
 
-export const ResponsiveAppBar = observer(() => {
+export const CustomerAppBar = observer(() => {
   const { userStore } = useStore();
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -42,13 +43,17 @@ export const ResponsiveAppBar = observer(() => {
       <AppBar position="static" style={{ backgroundColor: "green" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <Link href="/">
+            <Link style={{ textDecoration: "none" }} to="/">
               <img src={logo} alt="" style={{ width: 80 }} />
             </Link>
 
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
-                <Link href={`/${page.toLowerCase()}`} key={page}>
+                <Link
+                  style={{ textDecoration: "none" }}
+                  to={`/${page.toLowerCase()}`}
+                  key={page}
+                >
                   <Button sx={{ my: 2, color: "white", display: "block" }}>
                     {page}
                   </Button>
@@ -82,7 +87,11 @@ export const ResponsiveAppBar = observer(() => {
                 >
                   {!userStore.isLoggedIn &&
                     settingsWithoutLogin.map((setting) => (
-                      <Link href={`/${setting.toLowerCase()}`} key={setting}>
+                      <Link
+                        style={{ textDecoration: "none" }}
+                        to={`/${setting.toLowerCase()}`}
+                        key={setting}
+                      >
                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
                           <Typography textAlign="center">{setting}</Typography>
                         </MenuItem>
@@ -91,7 +100,11 @@ export const ResponsiveAppBar = observer(() => {
 
                   {userStore.isLoggedIn &&
                     settingsWithLogin.map((setting) => (
-                      <Link href={`/${setting.toLowerCase()}`} key={setting}>
+                      <Link
+                        style={{ textDecoration: "none" }}
+                        to={`/${setting.toLowerCase()}`}
+                        key={setting}
+                      >
                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
                           <Typography textAlign="center">{setting}</Typography>
                         </MenuItem>

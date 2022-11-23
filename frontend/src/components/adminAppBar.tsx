@@ -3,13 +3,13 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-import AdbIcon from "@mui/icons-material/Adb";
 
 import logo from "../assets/logo.png";
-import { Link, ThemeProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import { theme } from "../constants/theme";
 import { useStore } from "../stores";
 import { observer } from "mobx-react-lite";
+import { Link } from "react-router-dom";
 
 export const AdminAppBar = observer(() => {
   const { userStore } = useStore();
@@ -19,19 +19,17 @@ export const AdminAppBar = observer(() => {
       <AppBar position="static" style={{ backgroundColor: "red" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <Link href="/">
+            <Link style={{ textDecoration: "none" }} to="/">
               <img src={logo} alt="" style={{ width: 80 }} />
             </Link>
 
-            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              <Link href={"/admin/users"}>
+              <Link style={{ textDecoration: "none" }} to={"/admin/users"}>
                 <Button sx={{ my: 2, color: "white", display: "block" }}>
                   Edit users
                 </Button>
               </Link>
-              <Link href={"/admin/products"}>
+              <Link style={{ textDecoration: "none" }} to={"/admin/products"}>
                 <Button sx={{ my: 2, color: "white", display: "block" }}>
                   Edit products
                 </Button>
@@ -40,10 +38,11 @@ export const AdminAppBar = observer(() => {
 
             <Box sx={{ flexGrow: 0 }}>
               <Link
-                href={userStore.isLoggedIn ? "/admin/signout" : "/admin/signin"}
+                style={{ textDecoration: "none" }}
+                to={userStore.isAdmin ? "/admin/signout" : "/admin/signin"}
               >
                 <Button sx={{ my: 2, color: "white", display: "block" }}>
-                  {userStore.isLoggedIn ? "Signout" : "Signin"}
+                  {userStore.isAdmin ? "Signout" : "Signin"}
                 </Button>
               </Link>
             </Box>
