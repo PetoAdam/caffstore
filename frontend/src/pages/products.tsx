@@ -1,13 +1,14 @@
 import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { CaffPreviewComponent } from "../components/caffPreview";
+import { Link } from "react-router-dom";
+import { CaffProductComponent } from "../components/caffProductsComponent";
 import { useStore } from "../stores";
 
 export const Products = () => {
   const { caffStore } = useStore();
 
   useEffect(() => {
-    //caffStore.getCaffs();
+    caffStore.getCaffs();
   }, []);
 
   return (
@@ -22,7 +23,12 @@ export const Products = () => {
       >
         {caffStore.caffs.map((caff, index) => (
           <Grid item xs={12} md={6} lg={3} key={"caff" + index}>
-            <CaffPreviewComponent caff={caff} />
+            <Link
+              to={`/products/${caff.id}`}
+              style={{ textDecoration: "none" }}
+            >
+              <CaffProductComponent caff={caff} />
+            </Link>
           </Grid>
         ))}
       </Grid>

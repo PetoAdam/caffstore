@@ -8,7 +8,7 @@ type Props = {
   caff: Caff;
 };
 
-export const CaffPreviewComponent: React.FC<Props> = ({ caff }) => {
+export const CaffProductComponent: React.FC<Props> = ({ caff }) => {
   return (
     <Card sx={{ maxWidth: 350 }}>
       <CardMedia component="img" width="140" src={caff.file} alt={caff.name} />

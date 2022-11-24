@@ -13,3 +13,11 @@ export const caffMock = {
   file: "https://i.im.ge/2022/11/24/SULXaP.cat-meme-if-it-works-it-aint-stupid-sticker.webp",
   uploader: "asdfg@gmail.com",
 };
+
+export const caffMock2 = {
+  id: 2,
+  name: "caff2",
+  date: "2012-12-12T12:11:11",
+  file: "https://i.im.ge/2022/11/24/SULXaP.cat-meme-if-it-works-it-aint-stupid-sticker.webp",
+  uploader: "asdfg@gmail.com",
+};

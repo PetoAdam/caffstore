@@ -19,7 +19,7 @@ export const AdminAppBar = observer(() => {
       <AppBar position="static" style={{ backgroundColor: "red" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <Link style={{ textDecoration: "none" }} to="/">
+            <Link style={{ textDecoration: "none" }} to="/admin">
               <img src={logo} alt="" style={{ width: 80 }} />
             </Link>
 

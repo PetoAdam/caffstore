@@ -1,33 +1,19 @@
 import { makeAutoObservable } from "mobx";
 import { makePersistable, PersistStoreMap } from "mobx-persist-store";
-import { Caff, caffMock } from "../types/Caff";
+import { Caff, caffMock, caffMock2 } from "../types/Caff";
 
 export default class CaffStore {
-  caffs: Caff[] = [
-    caffMock,
-    caffMock,
-    caffMock,
-    caffMock,
-    caffMock,
-    caffMock,
-    caffMock,
-    caffMock,
-  ];
+  caffs: Caff[] = [caffMock, caffMock2];
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
   async getCaffs() {
-    fetch("http://petonet.ddns.net:5000/api/caffs", {
-      method: "get",
-      credentials: "same-origin",
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    //TODO api hívás
+  }
+
+  getCaffById(id: number) {
+    return this.caffs.find((x) => x.id === id);
   }
 }

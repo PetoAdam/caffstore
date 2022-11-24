@@ -20,8 +20,10 @@ import { Products } from "./pages/products";
 import { Upload } from "@mui/icons-material";
 import ErrorPage from "./pages/error";
 import { SignIn } from "./pages/signIn";
-import { observer } from "mobx-react-lite";
 import { useState } from "react";
+import { CaffPreview } from "./pages/caffPreview";
+import { Welcome } from "./pages/welcome";
+import { Cart } from "./pages/Cart";
 
 const App = () => {
   const { userStore } = useStore();
@@ -44,6 +46,7 @@ const App = () => {
       element: <CustomerLayout />,
       errorElement: <ErrorPage />,
       children: [
+        { path: "/", element: <Welcome /> },
         {
           path: `${Pages.signin.toLowerCase()}`,
           element: <SignIn />,
@@ -61,15 +64,25 @@ const App = () => {
           element: <Products />,
         },
         {
+          path: `${Pages.products.toLowerCase()}/:id`,
+          element: <CaffPreview />,
+        },
+        {
           path: `${Pages.upload.toLowerCase()}`,
           element: <Upload />,
         },
+        {
+          path: `${Pages.cart.toLowerCase()}`,
+          element: <Cart />,
+        },
       ],
     },
+
     {
       path: "/admin",
       element: <AdminLayout />,
       children: [
+        { path: "/admin", element: <Welcome /> },
         {
           path: "signin",
           element: <AdminSignIn />,
