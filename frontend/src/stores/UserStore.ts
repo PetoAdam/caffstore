@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { makeAutoObservable } from "mobx";
-import { makePersistable } from "mobx-persist-store";
+import { makePersistable, PersistStoreMap } from "mobx-persist-store";
 import { auth, db } from "../firebase";
 
 export default class UserStore {
@@ -18,11 +18,21 @@ export default class UserStore {
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
-    makePersistable(this, {
-      name: "UserStore",
-      properties: ["isLoggedIn", "isAdmin", "user"],
-      storage: window.localStorage,
-    });
+    const persist = () => {
+      makePersistable(this, {
+        name: "userStore",
+        properties: ["isLoggedIn", "isAdmin", "user"],
+        storage: window.localStorage,
+      });
+    };
+
+    const persistedStore = Array.from(PersistStoreMap.values()).find((el) =>
+      el.storageName.includes("userStore")
+    );
+    if (persistedStore) {
+      persistedStore.stopPersisting();
+    }
+    persist();
   }
 
   async login(email: string, password: string) {

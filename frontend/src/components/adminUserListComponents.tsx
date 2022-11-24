@@ -8,8 +8,8 @@ import {
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { db } from "../firebase";
-import { User } from "../pages/admin/editUsers";
 import { useNavigate } from "react-router-dom";
+import { User } from "../types/User";
 
 type Props = {
   user: User;

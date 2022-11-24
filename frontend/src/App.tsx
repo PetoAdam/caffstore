@@ -20,15 +20,21 @@ import { Products } from "./pages/products";
 import { Upload } from "@mui/icons-material";
 import ErrorPage from "./pages/error";
 import { SignIn } from "./pages/signIn";
+import { observer } from "mobx-react-lite";
+import { useState } from "react";
 
-function App() {
+const App = () => {
   const { userStore } = useStore();
+
+  const [isAdmin, setIsAdmin] = useState(false);
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       await userStore.setIsLoggedIn(true);
+      setIsAdmin(userStore.isAdmin);
     } else {
       await userStore.setIsLoggedIn(false);
+      setIsAdmin(userStore.isAdmin);
     }
   });
 
@@ -72,7 +78,7 @@ function App() {
     },
     {
       path: "/admin",
-      element: <ProtectedAdminLayout isAdmin={userStore.isAdmin} />,
+      element: <ProtectedAdminLayout isAdmin={isAdmin} />,
       children: [
         {
           path: "signout",
@@ -95,6 +101,6 @@ function App() {
       <RouterProvider router={router} />
     </div>
   );
-}
+};
 
 export default App;

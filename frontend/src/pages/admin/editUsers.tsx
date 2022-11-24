@@ -14,13 +14,7 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { AdminUserListComponent } from "../../components/adminUserListComponents";
 import { db } from "../../firebase";
-
-export type User = {
-  email: string;
-  isAdmin: boolean;
-  uid: string;
-  username: string;
-};
+import { User } from "../../types/User";
 
 export const EditUsers = () => {
   const [users, setUsers] = useState<User[]>([]);

@@ -39,10 +39,10 @@ export const AdminAppBar = observer(() => {
             <Box sx={{ flexGrow: 0 }}>
               <Link
                 style={{ textDecoration: "none" }}
-                to={userStore.isAdmin ? "/admin/signout" : "/admin/signin"}
+                to={userStore.isLoggedIn ? "/admin/signout" : "/admin/signin"}
               >
                 <Button sx={{ my: 2, color: "white", display: "block" }}>
-                  {userStore.isAdmin ? "Signout" : "Signin"}
+                  {userStore.isLoggedIn ? "Signout" : "Signin"}
                 </Button>
               </Link>
             </Box>
