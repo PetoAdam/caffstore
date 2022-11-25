@@ -4,10 +4,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 import { ThemeProvider } from "@mui/material";
-import { theme } from "../constants/theme";
-import { useStore } from "../stores";
+import { theme } from "../../constants/theme";
+import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 

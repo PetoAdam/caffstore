@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -7,13 +8,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
-  Typography,
 } from "@mui/material";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { CartItem } from "../components/cartItem";
+import { useStore } from "../stores";
 
-export const Cart = () => {
+export const Cart = observer(() => {
+  const { userStore } = useStore();
+
+  const onCheckout = () => {
+    //todo download caffs
+  };
+
   return (
     <Box
       sx={{
@@ -23,18 +29,31 @@ export const Cart = () => {
         alignItems: "center",
       }}
     >
-      <TableContainer component={Paper} sx={{ maxWidth: "70%" }}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Price</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>//Todo cart row</TableBody>
-        </Table>
-      </TableContainer>
+      <Box sx={{ width: "50%", flexDirection: "column", display: "flex" }}>
+        <TableContainer component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell width={"20%"}>Price</TableCell>
+                <TableCell width={"20%"}></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {userStore.cart.map((caff, index) => (
+                <CartItem caff={caff} key={"caff" + index} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Button
+          sx={{ alignSelf: "flex-end", marginTop: 10 }}
+          variant="contained"
+          onClick={onCheckout}
+        >
+          Check out & download
+        </Button>
+      </Box>
     </Box>
   );
-};
+});

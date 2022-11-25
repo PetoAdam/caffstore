@@ -3,14 +3,24 @@ import { makePersistable, PersistStoreMap } from "mobx-persist-store";
 import { Caff, caffMock, caffMock2 } from "../types/Caff";
 
 export default class CaffStore {
-  caffs: Caff[] = [caffMock, caffMock2];
+  caffs: Caff[] = [];
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
+
+    makePersistable(this, {
+      name: "CaffStore",
+      properties: ["caffs"],
+      storage: window.localStorage,
+    });
   }
 
   async getCaffs() {
-    //TODO api hívás
+    this.caffs = [];
+
+    //TODO caffok lekérése a backendről
+    this.caffs.push(caffMock);
+    this.caffs.push(caffMock2);
   }
 
   getCaffById(id: number) {

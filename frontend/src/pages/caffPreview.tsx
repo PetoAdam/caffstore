@@ -1,17 +1,35 @@
-import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Divider,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { observer } from "mobx-react-lite";
 
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { CommentComponent } from "../components/commentComponent";
 import { useStore } from "../stores";
 
-import { Caff } from "../types/Caff";
 import ErrorPage from "./error";
 
-export const CaffPreview = () => {
+export const CaffPreview = observer(() => {
   const { id } = useParams();
-  const { caffStore } = useStore();
+  const { caffStore, userStore } = useStore();
 
   const caff = caffStore.getCaffById(parseInt(id!));
+
+  const [comment, setComment] = useState("");
+
+  const onComment = () => {
+    //todo call comment endpoint
+  };
 
   if (caff)
     return (
@@ -19,7 +37,8 @@ export const CaffPreview = () => {
         sx={{
           display: "flex",
           padding: 10,
-          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
         }}
       >
         <Card sx={{ width: "70%" }}>
@@ -81,7 +100,66 @@ export const CaffPreview = () => {
             </CardContent>
           </Box>
         </Card>
+        <Typography variant="h2" sx={{ paddingTop: 20 }}>
+          Comments
+        </Typography>
+        <Paper style={{ padding: "40px 20px", width: "70%" }}>
+          {caff.comments?.map((comment, index) => (
+            <Box key={"comment" + index}>
+              <CommentComponent comment={comment} />
+              {index + 1 !== caff.comments?.length && (
+                <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
+              )}
+            </Box>
+          ))}
+        </Paper>
+        <Paper style={{ padding: "40px 20px", width: "70%", marginTop: 20 }}>
+          <Grid container wrap="nowrap" spacing={2}>
+            <Grid
+              justifyContent="left"
+              item
+              xs
+              zeroMinWidth
+              sx={{ flexDirection: "column", display: "flex" }}
+            >
+              <Typography variant="h4" sx={{ margin: 0, textAlign: "left" }}>
+                What are your thoughts?
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  margin: 0,
+                  textAlign: "left",
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                }}
+              >
+                {userStore.user?.username}
+              </Typography>
+              <TextField
+                multiline
+                minRows={5}
+                value={comment}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setComment(event.target.value);
+                }}
+                sx={{ textAlign: "left" }}
+              ></TextField>
+            </Grid>
+          </Grid>
+        </Paper>
+        <Box
+          sx={{
+            marginTop: 5,
+            width: "70%",
+            textAlign: "right",
+          }}
+        >
+          <Button variant="contained" onClick={onComment}>
+            Comment
+          </Button>
+        </Box>
       </Box>
     );
   else return <ErrorPage />;
-};
+});

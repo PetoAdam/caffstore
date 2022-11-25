@@ -1,6 +1,5 @@
-import { Box, Grid, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Box, Grid } from "@mui/material";
+import { useEffect } from "react";
 import { CaffProductComponent } from "../components/caffProductsComponent";
 import { useStore } from "../stores";
 
@@ -23,12 +22,7 @@ export const Products = () => {
       >
         {caffStore.caffs.map((caff, index) => (
           <Grid item xs={12} md={6} lg={3} key={"caff" + index}>
-            <Link
-              to={`/products/${caff.id}`}
-              style={{ textDecoration: "none" }}
-            >
-              <CaffProductComponent caff={caff} />
-            </Link>
+            <CaffProductComponent caff={caff} />
           </Grid>
         ))}
       </Grid>

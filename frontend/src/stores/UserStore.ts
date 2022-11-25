@@ -46,13 +46,13 @@ export default class UserStore {
       console.log(error.message);
     });
     await this.setIsLoggedIn(false);
+    this.resetCart();
   }
 
   async setIsLoggedIn(login: boolean) {
-    this.cart = [];
     this.isLoggedIn = login;
     this.setIsAdmin(false);
-    this.user = undefined;
+    this.setUser(undefined);
     if (login) {
       const user = auth.currentUser;
       if (user) {
@@ -60,7 +60,7 @@ export default class UserStore {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           if (docSnap.data()?.isAdmin) this.setIsAdmin(true);
-          this.user = docSnap.data() as User;
+          this.setUser(docSnap.data() as User);
         } else {
           const newUser = {
             email: user.email,
@@ -69,14 +69,33 @@ export default class UserStore {
             uid: user.uid,
           } as User;
 
-          this.user = newUser;
+          this.setUser(newUser);
           setDoc(doc(db, "users", user!.uid), newUser);
         }
       }
     }
   }
 
+  setUser(user: User | undefined) {
+    this.user = user;
+  }
+
   setIsAdmin(isAdmin: boolean) {
     this.isAdmin = isAdmin;
+  }
+
+  addToCart(caff: Caff) {
+    if (!this.cart.find((x) => x.id === caff.id)) {
+      this.cart.push(caff);
+      return true;
+    } else return false;
+  }
+
+  resetCart() {
+    this.cart = [];
+  }
+
+  removeFromCart(caff: Caff) {
+    this.cart = this.cart.filter((c) => c.id !== caff.id);
   }
 }

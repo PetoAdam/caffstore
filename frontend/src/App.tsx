@@ -24,6 +24,7 @@ import { useState } from "react";
 import { CaffPreview } from "./pages/caffPreview";
 import { Welcome } from "./pages/welcome";
 import { Cart } from "./pages/Cart";
+import { AdminCaffPreview } from "./pages/admin/adminCaffPreview";
 
 const App = () => {
   const { userStore } = useStore();
@@ -91,7 +92,7 @@ const App = () => {
     },
     {
       path: "/admin",
-      element: <ProtectedAdminLayout isAdmin={isAdmin} />,
+      element: <ProtectedAdminLayout isAdmin={isAdmin || userStore.isAdmin} />,
       children: [
         {
           path: "signout",
@@ -104,6 +105,10 @@ const App = () => {
         {
           path: "products",
           element: <EditProducts />,
+        },
+        {
+          path: `${Pages.products.toLowerCase()}/:id`,
+          element: <AdminCaffPreview />,
         },
       ],
     },

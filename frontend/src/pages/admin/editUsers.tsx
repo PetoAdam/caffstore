@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { AdminUserListComponent } from "../../components/adminUserListComponents";
+import { AdminUserListComponent } from "../../components/admin/adminUserListComponents";
 import { db } from "../../firebase";
 import { User } from "../../types/User";
 
@@ -61,7 +61,11 @@ export const EditUsers = () => {
           </TableHead>
           <TableBody>
             {users.map((user, index) => (
-              <AdminUserListComponent user={user} key={"user" + index} />
+              <AdminUserListComponent
+                user={user}
+                reset={getUsers}
+                key={"user" + index}
+              />
             ))}
           </TableBody>
         </Table>

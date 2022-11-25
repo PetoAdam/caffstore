@@ -1,5 +1,6 @@
 import {
   Button,
+  darken,
   MenuItem,
   TableCell,
   TableRow,
@@ -7,25 +8,17 @@ import {
 } from "@mui/material";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { db } from "../firebase";
-import { useNavigate } from "react-router-dom";
-import { User } from "../types/User";
+import { db } from "../../firebase";
+import { User } from "../../types/User";
 
 type Props = {
   user: User;
+  reset: () => void;
 };
 
-export const AdminUserListComponent: React.FC<Props> = ({ user }) => {
-  const [usernameBase, setUsernameBase] = useState(user.username);
-  const [isAdminBase, setIsAdminBase] = useState(user.isAdmin);
+export const AdminUserListComponent: React.FC<Props> = ({ user, reset }) => {
   const [username, setUsername] = useState(user.username);
   const [isAdmin, setIsAdmin] = useState(user.isAdmin);
-
-  const navigate = useNavigate();
-
-  const refreshPage = () => {
-    navigate(0);
-  };
 
   const handleIsAdminChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsAdmin(event.target.value === "true");
@@ -36,15 +29,14 @@ export const AdminUserListComponent: React.FC<Props> = ({ user }) => {
   };
 
   const onSave = async () => {
-    setUsernameBase(username);
-    setIsAdminBase(isAdmin);
     const docRef = doc(db, "users", user.uid);
     await setDoc(docRef, { isAdmin, username }, { merge: true });
+    reset();
   };
 
   const onDelete = async () => {
     await deleteDoc(doc(db, "users", user.uid));
-    refreshPage();
+    reset();
   };
 
   return (
@@ -92,7 +84,7 @@ export const AdminUserListComponent: React.FC<Props> = ({ user }) => {
         <Button
           variant="contained"
           sx={{ marginLeft: 2 }}
-          disabled={username === usernameBase && isAdmin === isAdminBase}
+          disabled={username === user.username && isAdmin === user.isAdmin}
           onClick={onSave}
         >
           Save
@@ -100,7 +92,7 @@ export const AdminUserListComponent: React.FC<Props> = ({ user }) => {
         <Button
           variant="contained"
           sx={{ marginLeft: 2 }}
-          disabled={username === usernameBase && isAdmin === isAdminBase}
+          disabled={username === user.username && isAdmin === user.isAdmin}
           onClick={() => {
             setUsername(user.username);
             setIsAdmin(user.isAdmin);
@@ -110,7 +102,13 @@ export const AdminUserListComponent: React.FC<Props> = ({ user }) => {
         </Button>
         <Button
           variant="contained"
-          sx={{ marginLeft: 2, backgroundColor: "red" }}
+          sx={{
+            marginLeft: 2,
+            backgroundColor: "red",
+            "&:hover": {
+              backgroundColor: darken("#ff0000", 0.3),
+            },
+          }}
           onClick={() => onDelete()}
         >
           Delete
@@ -125,32 +123,3 @@ const rowStyle = {
   border: "none",
   "& fieldset": { border: "none" },
 };
-
-/* <FormControl sx={{ width: "10%" }} size="small">
-        <Select
-          value={isAdmin ? "true" : "false"}
-          onChange={handleIsAdminChange}
-        >
-          <MenuItem value={"true"}>true</MenuItem>
-          <MenuItem value={"false"}>false</MenuItem>
-        </Select>
-      </FormControl>
-      <Button
-        variant="contained"
-        sx={{ marginLeft: 2 }}
-        disabled={username === usernameBase && isAdmin === isAdminBase}
-        onClick={onSave}
-      >
-        Save
-      </Button>
-      <Button
-        variant="contained"
-        sx={{ marginLeft: 2 }}
-        disabled={username === usernameBase && isAdmin === isAdminBase}
-        onClick={() => {
-          setUsername(user.username);
-          setIsAdmin(user.isAdmin);
-        }}
-      >
-        Reset
-      </Button> */
