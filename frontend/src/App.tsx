@@ -17,7 +17,6 @@ import { auth } from "./firebase";
 import { EditUsers } from "./pages/admin/editUsers";
 import { EditProducts } from "./pages/admin/adminProducts";
 import { Products } from "./pages/products";
-import { Upload } from "@mui/icons-material";
 import ErrorPage from "./pages/error";
 import { SignIn } from "./pages/signIn";
 import { useState } from "react";
@@ -25,6 +24,7 @@ import { CaffPreview } from "./pages/caffPreview";
 import { Welcome } from "./pages/welcome";
 import { Cart } from "./pages/Cart";
 import { AdminCaffPreview } from "./pages/admin/adminCaffPreview";
+import { Upload } from "./pages/upload";
 
 const App = () => {
   const { userStore } = useStore();
