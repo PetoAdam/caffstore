@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using MySql.Data.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
+//using Pomelo.EntityFrameworkCore.MySql;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CaffStore.REST.Dal
 {
@@ -23,7 +24,8 @@ namespace CaffStore.REST.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("Server=127.0.0.1; User ID=szonjabalega;Password=szonja;Port=9985; Database=caffstore");
+            var connectionString = "server=localhost;database=caffstore;user=szonjabalega;password=szonja";
+            optionsBuilder.UseMySql(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
