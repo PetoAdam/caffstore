@@ -32,7 +32,7 @@ namespace CaffStore.REST.Controllers
         {
             IQueryable<Dal.Caff> list = dbContext.Caffs;
             return list
-                    .Select(p => new Models.CaffPreview(p.Id, p.Name, p.Date, p.File, p.UploaderId))
+                    .Select(p => new Models.CaffPreview(p.Id, p.Name, p.Date, p.File, p.UploaderId, dbContext.Comments.Where(m => m.CaffId == p.Id).Select(m => new Models.Comment(m.Id, m.Text, m.Date, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList()))
                     .ToArray();
         }
 
@@ -46,40 +46,27 @@ namespace CaffStore.REST.Controllers
             {
                 return BadRequest();
             }
-            return new Models.CaffPreview(parent.Id, parent.Name, parent.Date, parent.File, parent.UploaderId);
+            return new Models.CaffPreview(parent.Id, parent.Name, parent.Date, parent.File, parent.UploaderId, dbContext.Comments.Where(m => m.CaffId == parent.Id).Select(m => new Models.Comment(m.Id, m.Text, m.Date, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList());
         }
 
         //[Authorize]
         [HttpPut]
         [Route("{id}")]
-        public ActionResult Modify([FromRoute] int id, [FromBody] Models.CaffPreview updated)
+        public ActionResult Modify([FromRoute] int id, [FromBody] Models.NewCaff updated)
         {
             var dbProduct = dbContext.Caffs.SingleOrDefault(p => p.Id == id);
 
             // If no instance with exists with given id, create a new one
             if (dbProduct == null)
-            {
+                return NotFound();
 
-                var dbParent = new Dal.Caff()
-                {
-                    Name = updated.Name,
-                    Date = updated.Date,
-                    File = updated.File,
-                    UploaderId = updated.UploaderId
-                };
-
-                // Save to DB
-                dbContext.Caffs.Add(dbParent);
-                dbContext.SaveChanges();
-                return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.CaffPreview(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId)); // telling where the inserted item can be found
-            }
             // Modify data
             else
             {
-                // Modifications
+                // Modifications -> What modifications do we allow?
                 dbProduct.Name = updated.Name;
-                dbProduct.Date = updated.Date;
-                dbProduct.File = updated.File;
+                //dbProduct.Date = DateTime.Now;
+                dbProduct.File = Services.Base64Converter.ConvertToByteArray(updated.File);
                 dbProduct.UploaderId = updated.UploaderId;
 
                 // Save to DB
@@ -91,22 +78,22 @@ namespace CaffStore.REST.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create([FromBody] Models.CaffPreview newParent)
+        public ActionResult Create([FromBody] Models.NewCaff newCaff)
         {
 
             var dbParent = new Dal.Caff()
             {
-                Name = newParent.Name,
-                Date = newParent.Date,
-                File = newParent.File,
-                UploaderId = newParent.UploaderId
+                Name = newCaff.Name,
+                Date = DateTime.Now,
+                File = Services.Base64Converter.ConvertToByteArray(newCaff.File),
+                UploaderId = newCaff.UploaderId
             };
 
             // Save to DB
             dbContext.Caffs.Add(dbParent);
             dbContext.SaveChanges();
 
-            return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.CaffPreview(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId)); // telling where the inserted item can be found
+            return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.CaffPreview(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId, dbContext.Comments.Where(m => m.CaffId == dbParent.Id).Select(m => new Models.Comment(m.Id, m.Text, m.Date, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())); // telling where the inserted item can be found
         }
     }
 }
