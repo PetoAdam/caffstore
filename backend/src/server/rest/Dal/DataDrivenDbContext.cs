@@ -24,7 +24,7 @@ namespace CaffStore.REST.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = "server=localhost;database=caffstore;user=szonjabalega;password=szonja";
+            var connectionString = "server=localhost;database=caffstore;user=root;password=rootpassword";
             optionsBuilder.UseMySql(connectionString);
         }
 

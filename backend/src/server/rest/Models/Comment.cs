@@ -8,11 +8,11 @@ namespace CaffStore.REST.Models
     public class Comment
     {
 
-        public Comment(int id, string text, DateTime date, int userId, int caffId, string userName)
+        public Comment(int id, string text, DateTime creationDate, int userId, int caffId, string userName)
         {
             Id = id;
             Text = text;
-            Date = date;
+            CreationDate = creationDate;
             UserId = userId;
             CaffId = caffId;
             UserName = userName;
@@ -20,7 +20,7 @@ namespace CaffStore.REST.Models
 
         public int Id { get; set; }
         public string Text { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime CreationDate { get; set; }
         public int UserId { get; set; }
         public int CaffId { get; set; }
         public string UserName { get; set; }

@@ -9,11 +9,11 @@ namespace CaffStore.REST.Models
 {
     public class CaffPreview
     {
-        public CaffPreview(int id, string name, DateTime date, byte[] file, int uploaderId, List<Comment> comments)
+        public CaffPreview(int id, string name, DateTime creationDate, byte[] file, int uploaderId, List<Comment> comments)
         {
             Id = id;
             Name = name;
-            Date = date;
+            CreationDate = creationDate;
             // Generate the preview from the uploaded file.
             File = Parse(file);
             UploaderId = uploaderId;
@@ -22,7 +22,7 @@ namespace CaffStore.REST.Models
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime CreationDate { get; set; }
         public string File { get; set; }
         public int UploaderId { get; set; }
         public List<Comment> Comments { get; set; }

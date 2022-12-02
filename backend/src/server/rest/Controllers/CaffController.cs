@@ -32,7 +32,7 @@ namespace CaffStore.REST.Controllers
         {
             IQueryable<Dal.Caff> list = dbContext.Caffs;
             return list
-                    .Select(p => new Models.CaffPreview(p.Id, p.Name, p.Date, p.File, p.UploaderId, dbContext.Comments.Where(m => m.CaffId == p.Id).Select(m => new Models.Comment(m.Id, m.Text, m.Date, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList()))
+                    .Select(p => new Models.CaffPreview(p.Id, p.Name, p.CreationDate, p.CaffFile, p.UploaderId, dbContext.Comments.Where(m => m.CaffId == p.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList()))
                     .ToArray();
         }
 
@@ -46,7 +46,7 @@ namespace CaffStore.REST.Controllers
             {
                 return BadRequest();
             }
-            return new Models.CaffPreview(parent.Id, parent.Name, parent.Date, parent.File, parent.UploaderId, dbContext.Comments.Where(m => m.CaffId == parent.Id).Select(m => new Models.Comment(m.Id, m.Text, m.Date, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList());
+            return new Models.CaffPreview(parent.Id, parent.Name, parent.CreationDate, parent.CaffFile, parent.UploaderId, dbContext.Comments.Where(m => m.CaffId == parent.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList());
         }
 
         //[Authorize]
@@ -66,7 +66,7 @@ namespace CaffStore.REST.Controllers
                 // Modifications -> What modifications do we allow?
                 dbProduct.Name = updated.Name;
                 //dbProduct.Date = DateTime.Now;
-                dbProduct.File = Services.Base64Converter.ConvertToByteArray(updated.File);
+                dbProduct.CaffFile = Services.Base64Converter.ConvertToByteArray(updated.File);
                 dbProduct.UploaderId = updated.UploaderId;
 
                 // Save to DB
@@ -84,8 +84,8 @@ namespace CaffStore.REST.Controllers
             var dbParent = new Dal.Caff()
             {
                 Name = newCaff.Name,
-                Date = DateTime.Now,
-                File = Services.Base64Converter.ConvertToByteArray(newCaff.File),
+                CreationDate = DateTime.Now,
+                CaffFile = Services.Base64Converter.ConvertToByteArray(newCaff.File),
                 UploaderId = newCaff.UploaderId
             };
 
@@ -93,7 +93,7 @@ namespace CaffStore.REST.Controllers
             dbContext.Caffs.Add(dbParent);
             dbContext.SaveChanges();
 
-            return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.CaffPreview(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId, dbContext.Comments.Where(m => m.CaffId == dbParent.Id).Select(m => new Models.Comment(m.Id, m.Text, m.Date, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())); // telling where the inserted item can be found
+            return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.CaffPreview(dbParent.Id, dbParent.Name, dbParent.CreationDate, dbParent.CaffFile, dbParent.UploaderId, dbContext.Comments.Where(m => m.CaffId == dbParent.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())); // telling where the inserted item can be found
         }
     }
 }
