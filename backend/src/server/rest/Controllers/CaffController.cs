@@ -28,31 +28,31 @@ namespace CaffStore.REST.Controllers
         // GET: api/<CaffController>
         //[Authorize]
         [HttpGet]
-        public ActionResult<Models.Caff[]> List()
+        public ActionResult<Models.CaffPreview[]> List()
         {
             IQueryable<Dal.Caff> list = dbContext.Caffs;
             return list
-                    .Select(p => new Models.Caff(p.Id, p.Name, p.Date, p.File, p.UploaderId))
+                    .Select(p => new Models.CaffPreview(p.Id, p.Name, p.Date, p.File, p.UploaderId))
                     .ToArray();
         }
 
         // GET api/<CaffController>/5
         //[Authorize]
         [HttpGet("{id}")]
-        public ActionResult<Models.Caff> Get(int id)
+        public ActionResult<Models.CaffPreview> Get(int id)
         {
             var parent = dbContext.Caffs.SingleOrDefault(p => p.Id == id);
             if (parent == null)
             {
                 return BadRequest();
             }
-            return new Models.Caff(parent.Id, parent.Name, parent.Date, parent.File, parent.UploaderId);
+            return new Models.CaffPreview(parent.Id, parent.Name, parent.Date, parent.File, parent.UploaderId);
         }
 
         //[Authorize]
         [HttpPut]
         [Route("{id}")]
-        public ActionResult Modify([FromRoute] int id, [FromBody] Models.Caff updated)
+        public ActionResult Modify([FromRoute] int id, [FromBody] Models.CaffPreview updated)
         {
             var dbProduct = dbContext.Caffs.SingleOrDefault(p => p.Id == id);
 
@@ -71,7 +71,7 @@ namespace CaffStore.REST.Controllers
                 // Save to DB
                 dbContext.Caffs.Add(dbParent);
                 dbContext.SaveChanges();
-                return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.Caff(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId)); // telling where the inserted item can be found
+                return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.CaffPreview(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId)); // telling where the inserted item can be found
             }
             // Modify data
             else
@@ -91,7 +91,7 @@ namespace CaffStore.REST.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create([FromBody] Models.Caff newParent)
+        public ActionResult Create([FromBody] Models.CaffPreview newParent)
         {
 
             var dbParent = new Dal.Caff()
@@ -106,7 +106,7 @@ namespace CaffStore.REST.Controllers
             dbContext.Caffs.Add(dbParent);
             dbContext.SaveChanges();
 
-            return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.Caff(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId)); // telling where the inserted item can be found
+            return CreatedAtAction(nameof(Get), new { id = dbParent.Id }, new Models.CaffPreview(dbParent.Id, dbParent.Name, dbParent.Date, dbParent.File, dbParent.UploaderId)); // telling where the inserted item can be found
         }
     }
 }
