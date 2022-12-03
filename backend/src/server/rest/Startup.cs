@@ -9,11 +9,16 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Http;
 
+using Microsoft.AspNetCore.Identity;
 
 namespace CaffStore.REST
 {
     public class Startup
     {
+
+        // currently using CORS to be able to call requests during development.
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,6 +28,15 @@ namespace CaffStore.REST
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin();
+                                  });
+            });
+
             services.AddControllers().AddNewtonsoftJson();
             services.AddDbContext<Dal.DataDrivenDbContext>();
 
@@ -53,6 +67,9 @@ namespace CaffStore.REST
                 //options.Filters.Add(new RequireHttpsAttribute());
             });
 
+            services.AddAuthorization(opt =>
+                opt.AddPolicy("admin", policy => policy.RequireClaim("admin", "true"))
+            );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -64,6 +81,7 @@ namespace CaffStore.REST
             }
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

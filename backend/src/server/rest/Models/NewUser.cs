@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CaffStore.REST.Dal
+namespace CaffStore.REST.Models
 {
-    public class User
+    public class NewUser
     {
-        public int Id { get; set; }
         public string Email { get; set; }
-        public string Password {get; set;}
+        public string Password{get; set; }
         public string Name { get; set; }
-        public bool Admin { get; set; }
     }
 }
