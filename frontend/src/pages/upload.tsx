@@ -10,6 +10,7 @@ import { theme } from "../constants/theme";
 import { useStore } from "../stores";
 import { useNavigate } from "react-router-dom";
 import { Caff } from "../types/Caff";
+import { caffService } from "../services/caffService";
 
 export const Upload = () => {
   const { userStore } = useStore();
@@ -60,7 +61,7 @@ export const Upload = () => {
     }
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const uploadCaff = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (name && (fileError == "")) {
       let date = new Date()
@@ -72,7 +73,8 @@ export const Upload = () => {
         uploader: String(userStore.user?.username)
       }
       console.log(caff)
-      // TODO - save to database
+      // TODO - upload caff - check with backend
+      let casesRes = await caffService.addCaff(caff)
     }
   };
 
@@ -91,7 +93,7 @@ export const Upload = () => {
           <Typography component="h1" variant="h5" fontFamily={'sans-serif'}>
             Upload your CAFF file!
           </Typography>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={uploadCaff}>
             <TextField
               margin="normal"
               required

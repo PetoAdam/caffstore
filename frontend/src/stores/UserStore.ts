@@ -3,6 +3,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { makeAutoObservable } from "mobx";
 import { makePersistable, PersistStoreMap } from "mobx-persist-store";
 import { auth, db } from "../firebase";
+import { httpService } from "../services/httpService";
 import { Caff } from "../types/Caff";
 import { User } from "../types/User";
 
@@ -35,9 +36,12 @@ export default class UserStore {
   }
 
   async login(email: string, password: string) {
-    await signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      console.log(error.message);
-    });
+    try {
+      let userCredentials: any = await signInWithEmailAndPassword(auth, email, password)
+      httpService.accessToken = userCredentials.user.accessToken
+    } catch (error) {
+      console.log(error)
+    }
     await this.setIsLoggedIn(true);
   }
 
@@ -45,6 +49,7 @@ export default class UserStore {
     await signOut(auth).catch((error) => {
       console.log(error.message);
     });
+    httpService.accessToken = ""
     await this.setIsLoggedIn(false);
     this.resetCart();
   }

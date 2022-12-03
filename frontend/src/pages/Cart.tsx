@@ -12,12 +12,20 @@ import {
 import { observer } from "mobx-react-lite";
 import { CartItem } from "../components/cartItem";
 import { useStore } from "../stores";
+import { saveAs } from 'file-saver'
 
 export const Cart = observer(() => {
   const { userStore } = useStore();
 
   const onCheckout = () => {
-    //todo download caffs
+    // todo - download - check this with backend
+    userStore.cart.forEach(caff => {
+      try {
+        saveAs(caff.file, caff.name)
+      } catch (error) {
+        console.log(error)
+      }
+    });
   };
 
   return (

@@ -16,7 +16,10 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { CommentComponent } from "../../components/commentComponent";
+import { caffService } from "../../services/caffService";
+import { commentService } from "../../services/commentService";
 import { useStore } from "../../stores";
+import { Caff } from "../../types/Caff";
 import ErrorPage from "../error";
 
 export const AdminCaffPreview = observer(() => {
@@ -27,16 +30,33 @@ export const AdminCaffPreview = observer(() => {
   const [caffName, setCaffName] = useState(caff?.name);
   const [caffUploader, setCaffUploader] = useState(caff?.uploader);
 
-  const onDeleteComment = (id: number) => {
-    //TODO call delete comment endpoint
+  const onDeleteComment = async (id: number) => {
+    //TODO - delete comment - check with backend
+    let deletedComment = await commentService.deleteComment(id)
+    console.log(deletedComment)
   };
 
-  const onDelete = () => {
-    //TODO call delete caff endpoint
-  };
+  const deleteCaff = async () => {
+    //TODO - delete caff - chack with backend
+    if (caff != undefined) {
+      let deletedCaff = await caffService.deleteCaff(caff.id)
+    }
+  }
 
-  const onSave = () => {
-    //TODO call update caff endpoint
+  const modifyCaff = async () => {
+    //TODO - modify caff - check with backend
+    if (caff != undefined && caffName != undefined && caffUploader != undefined) {
+      let newCaff: Caff = {
+        id: 0,
+        name: caffName,
+        date: caff?.date,
+        file: caff?.file,
+        uploader: caffUploader,
+        comments: caff?.comments
+      }
+      let modifiedCaff = await caffService.modifyCaff(caff?.id, newCaff)
+      console.log(modifiedCaff)
+    }
   };
 
   const editCaff = () => {
@@ -118,11 +138,11 @@ export const AdminCaffPreview = observer(() => {
                       backgroundColor: darken("#ff0000", 0.3),
                     },
                   }}
-                  onClick={onDelete}
+                  onClick={deleteCaff}
                 >
                   Delete
                 </Button>
-                <Button variant="contained" onClick={onSave}>
+                <Button variant="contained" onClick={modifyCaff}>
                   Save
                 </Button>
               </Box>

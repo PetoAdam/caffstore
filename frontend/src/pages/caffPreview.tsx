@@ -16,7 +16,8 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { CommentComponent } from "../components/commentComponent";
 import { useStore } from "../stores";
-
+import { Comment } from "../types/Caff";
+import { commentService } from "../services/commentService";
 import ErrorPage from "./error";
 
 export const CaffPreview = observer(() => {
@@ -28,14 +29,23 @@ export const CaffPreview = observer(() => {
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState("");
 
-  const onComment = () => {
+  const onComment = async () => {
     if (comment == "") {
       setCommentError("Before posting you have to write something!")
     }
     else {
       setCommentError("")
+      //todo - addComment - check this with backend
+      let newComment: Comment = {
+        id: 0,
+        author: String(userStore.user?.username),
+        comment: comment
+      }
+      console.log(newComment)
+      await commentService.addComment(newComment)
+      await caffStore.getCaffs()
+      caffStore.getCaffById(parseInt(id!))
     }
-    //todo call comment endpoint
   };
 
   if (caff)

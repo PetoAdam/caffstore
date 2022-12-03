@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { makePersistable, PersistStoreMap } from "mobx-persist-store";
+import { caffService } from "../services/caffService";
 import { Caff, caffMock, caffMock2 } from "../types/Caff";
 
 export default class CaffStore {
@@ -16,14 +17,16 @@ export default class CaffStore {
   }
 
   async getCaffs() {
-    this.caffs = [];
-
-    //TODO caffok lekérése a backendről
-    this.caffs.push(caffMock);
-    this.caffs.push(caffMock2);
+    // TODO - get caffs - check with backend
+    this.caffs = await caffService.getCaffs()
+    
+    //this.caffs = [];
+    //this.caffs.push(caffMock);
+    //this.caffs.push(caffMock2);
   }
 
   getCaffById(id: number) {
     return this.caffs.find((x) => x.id === id);
   }
+
 }

@@ -13,7 +13,6 @@ import {
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useStore } from "../stores";
-
 import { Caff } from "../types/Caff";
 
 type Props = {
@@ -23,7 +22,6 @@ type Props = {
 
 export const CaffProductComponent: React.FC<Props> = ({ caff, isAdmin }) => {
   const { userStore } = useStore();
-
   const [isAlertDisplayed, setIsAlertDisplayed] = useState(false);
 
   const onClick = () => {
@@ -38,26 +36,44 @@ export const CaffProductComponent: React.FC<Props> = ({ caff, isAdmin }) => {
   return (
     <>
       <Card sx={{ maxWidth: 350 }}>
-        <Link
-          to={`/products/${caff.id}`}
-          style={{ textDecoration: "none", color: "black" }}
-        >
-          <CardMedia
-            component="img"
-            width="140"
-            src={caff.file}
-            alt={caff.name}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {caff.name}
-            </Typography>
-            <Typography gutterBottom variant="h6" component="div">
-              {caff.uploader}
-            </Typography>
-          </CardContent>
-        </Link>
-
+        {(userStore.isLoggedIn) ? (
+          <Link
+            to={`/products/${caff.id}`}
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            <CardMedia
+              component="img"
+              width="140"
+              src={caff.file}
+              alt={caff.name}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {caff.name}
+              </Typography>
+              <Typography gutterBottom variant="h6" component="div">
+                {caff.uploader}
+              </Typography>
+            </CardContent>
+          </Link>
+        ) :
+          <div>
+            <CardMedia
+              component="img"
+              width="140"
+              src={caff.file}
+              alt={caff.name}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {caff.name}
+              </Typography>
+              <Typography gutterBottom variant="h6" component="div">
+                {caff.uploader}
+              </Typography>
+            </CardContent>
+          </div>
+        }
         <CardActions>
           <Button size="small" onClick={onClick}>
             Add to cart

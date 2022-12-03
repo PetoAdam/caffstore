@@ -16,6 +16,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useStore } from "../stores";
 import { useNavigate } from "react-router-dom";
+import { httpService } from "../services/httpService";
 
 export function SignUp() {
   const { userStore } = useStore();
@@ -36,8 +37,9 @@ export function SignUp() {
     event.preventDefault();
     if (email && password === rePassword && password)
       createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then((userCredential: any) => {
           const user = userCredential.user;
+          httpService.accessToken = userCredential.user.accessToken
           setDoc(doc(db, "users", user.uid), {
             email: user.email,
             username: user.email,
