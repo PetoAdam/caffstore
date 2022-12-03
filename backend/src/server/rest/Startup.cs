@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
+
 
 namespace CaffStore.REST
 {
@@ -39,6 +42,17 @@ namespace CaffStore.REST
                 };
             });
 
+            services.AddHttpsRedirection(options => 
+            {
+                options.RedirectStatusCode = 307;
+                options.HttpsPort = 5001;
+            });
+            services.AddMvc(options =>
+            {
+                options.SslPort = 443;
+                //options.Filters.Add(new RequireHttpsAttribute());
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -48,7 +62,7 @@ namespace CaffStore.REST
             {
                 IdentityModelEventSource.ShowPII = true;
             }
-
+            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
