@@ -34,6 +34,7 @@ namespace CaffStore.REST.Dal
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
                 entity.Property(e => e.Name).HasMaxLength(50);
+                entity.Property(x => x.CaffFile).HasColumnType("longblob");
             });
 
         }
