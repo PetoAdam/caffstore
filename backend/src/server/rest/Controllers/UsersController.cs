@@ -27,7 +27,7 @@ namespace CaffStore.REST.Controllers
         // Get the user's custom token
         // GET: api/users/login
         [HttpGet("login")]
-        public async Task<ActionResult<string>> GetUserToken([FromBody] LoginInfo loginInfo)
+        public async Task<ActionResult<CustomToken>> GetUserToken([FromBody] LoginInfo loginInfo)
         {
             var dbUsers = await dbContext.Users.ToListAsync();
             var dbUser = dbUsers.FirstOrDefault(u => u.Email == loginInfo.Email);
@@ -48,7 +48,7 @@ namespace CaffStore.REST.Controllers
             var firebaseUser = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(loginInfo.Email);
             var uid = firebaseUser.Uid;
             string customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(uid, additionalClaims);
-            return customToken;
+            return new CustomToken{Token = customToken, IsAdmin = dbUser.Admin};
         }
 
         // GET: api/users
