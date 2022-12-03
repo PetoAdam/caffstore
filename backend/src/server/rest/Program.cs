@@ -1,4 +1,7 @@
-﻿using FirebaseAdmin;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using FirebaseAdmin;
+using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -9,14 +12,12 @@ namespace CaffStore.REST
     {
         public static void Main(string[] args)
         {
-            //TODO: add credentials
-            /*
+
             FirebaseApp.Create(new AppOptions()
             {
-                //Credential = GoogleCredential.FromFile("Resources/secretkey.json") // json file should be set as envvar to keep it secret.
-                
+                Credential = GoogleCredential.FromFile("/home/ubuntu/caffstore-secret/caff-store-firebase-adminsdk-lu9y2-97f18fd13d.json") 
             });
-            */
+
             CreateWebHostBuilder(args).Build().Run();
         }
 

@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CaffStore.REST.Dal;
 using CaffStore.REST.Models;
+using FirebaseAdmin.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CaffStore.REST.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -21,7 +24,35 @@ namespace CaffStore.REST.Controllers
             dbContext = context;
         }
 
+        // Get the user's custom token
+        // GET: api/users/login
+        [HttpGet("login")]
+        public async Task<ActionResult<string>> GetUserToken([FromBody] LoginInfo loginInfo)
+        {
+            var dbUsers = await dbContext.Users.ToListAsync();
+            var dbUser = dbUsers.FirstOrDefault(u => u.Email == loginInfo.Email);
+            if(dbUser == null)
+            {
+                return Ok("No user with given email exists");
+            }
+
+            if(dbUser.Password != loginInfo.Password)
+            {
+                return Unauthorized("Email and password does not match");
+            }
+
+            var additionalClaims = new Dictionary<string, object>()
+            {
+                { "admin", dbUser.Admin },
+            };
+            var firebaseUser = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(loginInfo.Email);
+            var uid = firebaseUser.Uid;
+            string customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(uid, additionalClaims);
+            return customToken;
+        }
+
         // GET: api/users
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<Models.User[]>> GetUser()
         {
@@ -30,6 +61,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET: api/users/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.User>> GetUser(int id)
         {
@@ -46,18 +78,23 @@ namespace CaffStore.REST.Controllers
         // PUT: api/users/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [Authorize(Policy = "admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, NewUser newUser)
+        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] NewUser newUser)
         {
             var dbUser = await dbContext.Users.FindAsync(id);
+            var firebaseUser = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(dbUser.Email);
+            var uid = firebaseUser.Uid;
             dbContext.Entry(dbUser).State = EntityState.Modified;
 
             if(dbContext.Users.Where(u => u.Email == newUser.Email && u.Id != dbUser.Id).ToList().Count != 0)
             {
                 return Ok("Email already in use");
             }
-            dbUser.Name = newUser.Name;
+
             dbUser.Email = newUser.Email;
+            dbUser.Password = newUser.Password;
+            dbUser.Name = newUser.Name;
 
             try
             {
@@ -75,6 +112,16 @@ namespace CaffStore.REST.Controllers
                 }
             }
 
+            UserRecordArgs args = new UserRecordArgs()
+            {
+                Uid = uid,
+                Email = dbUser.Email,
+                Password = dbUser.Password,
+                DisplayName = dbUser.Name,
+            };
+            UserRecord userRecord = await FirebaseAuth.DefaultInstance.UpdateUserAsync(args);
+
+
             return NoContent();
         }
 
@@ -82,11 +129,17 @@ namespace CaffStore.REST.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Models.User>> PostUser(NewUser newUser)
+        public async Task<ActionResult<Models.User>> PostUser([FromBody] NewUser newUser)
         {
+            if(dbContext.Users.FirstOrDefault(u => u.Email == newUser.Email) != null)
+            {
+                return Ok("Email already in use");
+            }
+
             var dbUser = new Dal.User
             {
                 Email = newUser.Email,
+                Password = newUser.Password,
                 Name = newUser.Name,
                 Admin = false
             };
@@ -94,10 +147,21 @@ namespace CaffStore.REST.Controllers
             dbContext.Users.Add(dbUser);
             await dbContext.SaveChangesAsync();
 
+            UserRecordArgs args = new UserRecordArgs()
+            {
+                Email = newUser.Email,
+                EmailVerified = false,
+                Password = newUser.Password,
+                DisplayName = newUser.Name
+            };
+            UserRecord userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(args);
+
+
             return CreatedAtAction("GetUser", new { id = dbUser.Id }, new Models.User(dbUser.Id, dbUser.Email, dbUser.Name, dbUser.Admin));
         }
 
         // DELETE: api/users/5
+        [Authorize(Policy = "admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Models.User>> DeleteUser(int id)
         {
@@ -107,7 +171,9 @@ namespace CaffStore.REST.Controllers
                 return NotFound();
             }
 
-            // TODO: Should we remove the caffs and comments of the deleted user?
+            var firebaseUser = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(user.Email);
+            var uid = firebaseUser.Uid;
+
             var caffs = dbContext.Caffs.Where(c => c.UploaderId == id).ToArray();
             var comments = dbContext.Comments.Where(c => c.UserId == id).ToArray();
 
@@ -119,6 +185,8 @@ namespace CaffStore.REST.Controllers
 
             dbContext.Users.Remove(user);
             await dbContext.SaveChangesAsync();
+
+            await FirebaseAuth.DefaultInstance.DeleteUserAsync(uid);
 
             return new Models.User(user.Id, user.Email, user.Name, user.Admin);
         }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CaffStore.REST.Dal;
 using CaffStore.REST.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CaffStore.REST.Controllers
 {
@@ -23,6 +24,7 @@ namespace CaffStore.REST.Controllers
 
 
         // GET: api/Comments/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.Comment>> GetComment(int id)
         {
@@ -39,6 +41,7 @@ namespace CaffStore.REST.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Models.Comment>> PostComment(NewComment newComment)
         {
@@ -56,6 +59,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // DELETE: api/Comments/5
+        [Authorize(Policy = "admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Models.Comment>> DeleteComment(int id)
         {
