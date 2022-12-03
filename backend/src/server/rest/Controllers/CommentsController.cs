@@ -24,7 +24,7 @@ namespace CaffStore.REST.Controllers
 
 
         // GET: api/Comments/5
-        [Authorize]
+        [Authorize(Policy = "user")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.Comment>> GetComment(int id)
         {
@@ -41,7 +41,7 @@ namespace CaffStore.REST.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [Authorize]
+        [Authorize(Policy = "user")]
         [HttpPost]
         public async Task<ActionResult<Models.Comment>> PostComment(NewComment newComment)
         {

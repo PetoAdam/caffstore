@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace CaffStore.REST.Controllers
 {
-    //TODO: remove commented [Authorize] when firebase is ready.
 
     [Route("api/caffs")]
     [ApiController]
@@ -27,7 +26,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET: api/caffs
-        [Authorize]
+        [Authorize(Policy = "user")]
         [HttpGet]
         public async Task<ActionResult<Models.CaffPreview[]>> List()
         {
@@ -36,7 +35,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs/5
-        [Authorize]
+        [Authorize(Policy = "user")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.CaffPreview>> Get(int id)
         {
@@ -49,7 +48,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs
-        [Authorize]
+        [Authorize(Policy = "user")]
         [HttpGet]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByName([FromQuery] string name)
         {
@@ -58,7 +57,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs
-        [Authorize]
+        [Authorize(Policy = "user")]
         [HttpGet]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByUserId([FromQuery] int userId)
         {
@@ -67,7 +66,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs
-        [Authorize]
+        [Authorize(Policy = "user")]
         [HttpGet]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByEmail([FromQuery] string email)
         {
@@ -121,7 +120,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // POST api/caffs
-        [Authorize(Policy = "admin")]
+        [Authorize(Policy = "user")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] Models.NewCaff newCaff)
         {
@@ -142,7 +141,7 @@ namespace CaffStore.REST.Controllers
         }
 
         // DELETE: api/caffs/5
-        [Authorize]
+        [Authorize(Policy = "admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Models.CaffPreview>> DeleteCaff(int id)
         {

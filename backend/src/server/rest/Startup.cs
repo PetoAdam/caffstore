@@ -52,10 +52,16 @@ namespace CaffStore.REST
                     ValidAudience = Configuration["Jwt:Firebase:ValidAudience"]
                 };
             });
-
+            
+            /*
             services.AddAuthorization(opt =>
                 opt.AddPolicy("admin", policy => policy.RequireClaim("admin", "true"))
             );
+
+            services.AddAuthorization(opt =>
+                opt.AddPolicy("user", policy => policy.RequireClaim("admin", "false", "true"))
+            );
+            */
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

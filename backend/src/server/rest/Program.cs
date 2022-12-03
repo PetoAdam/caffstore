@@ -15,7 +15,7 @@ namespace CaffStore.REST
 
             FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.FromFile("/home/ubuntu/caffstore-secret/caff-store-firebase-adminsdk-lu9y2-97f18fd13d.json") 
+                Credential = GoogleCredential.FromFile("Resources/caff-store-firebase-adminsdk-lu9y2-97f18fd13d.json") 
             });
 
             CreateWebHostBuilder(args).Build().Run();
