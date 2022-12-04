@@ -26,13 +26,16 @@ namespace CaffStore.REST
                 Credential = GoogleCredential.FromFile("/home/ubuntu/caffstore-secret/caff-store-firebase-adminsdk-lu9y2-53f4bdc1f6.json")
             });
             
+            CreateWebHostBuilder(args).Build().Run();
             
+            /*
             var config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddEnvironmentVariables()
             .AddJsonFile("backend/src/server/rest/certificate.json", optional: true, reloadOnChange: true)
             .AddJsonFile($"backend/src/server/rest/certificate.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
             .Build();
+            
 
             var certificateSettings = config.GetSection("certificateSettings");
             string certificateFileName = certificateSettings.GetValue<string>("filename");
@@ -65,6 +68,7 @@ namespace CaffStore.REST
                 .Build();
 
             host.Run();
+            */
         }
 
         
@@ -80,5 +84,9 @@ namespace CaffStore.REST
             }
             return secureString;
         }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }

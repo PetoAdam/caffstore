@@ -52,19 +52,28 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET: api/users
-        [Authorize]
+        //[Authorize]
         [HttpGet]
-        public async Task<ActionResult<Models.User[]>> GetUser()
+        public async Task<ActionResult<Models.User[]>> GetUser([FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
             var dbUsers = await dbContext.Users.ToListAsync();
             return dbUsers.Select(u => new Models.User(u.Id, u.Email, u.Name, u.Admin)).ToArray();
         }
 
         // GET: api/users/5
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Models.User>> GetUser(int id)
+        public async Task<ActionResult<Models.User>> GetUser(int id, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
             var user = await dbContext.Users.FindAsync(id);
 
             if (user == null)
@@ -78,10 +87,15 @@ namespace CaffStore.REST.Controllers
         // PUT: api/users/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [Authorize(Policy = "admin")]
+        //[Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] NewUser newUser)
+        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] NewUser newUser, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth != Authorization.Auth.Admin){
+                return Unauthorized();
+            }
+
             var dbUser = await dbContext.Users.FindAsync(id);
             var firebaseUser = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(dbUser.Email);
             var uid = firebaseUser.Uid;
@@ -161,10 +175,14 @@ namespace CaffStore.REST.Controllers
         }
 
         // DELETE: api/users/5
-        [Authorize(Policy = "admin")]
+        //[Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Models.User>> DeleteUser(int id)
+        public async Task<ActionResult<Models.User>> DeleteUser(int id, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth != Authorization.Auth.Admin){
+                return Unauthorized();
+            }
             var user = await dbContext.Users.FindAsync(id);
             if (user == null)
             {

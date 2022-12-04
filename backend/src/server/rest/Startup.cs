@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Http;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Certificate;
 
 namespace CaffStore.REST
 {
@@ -56,6 +57,10 @@ namespace CaffStore.REST
                 };
             });
 
+            /*services.AddAuthentication(
+                CertificateAuthenticationDefaults.AuthenticationScheme)
+                .AddCertificate();
+
             services.AddHttpsRedirection(options => 
             {
                 options.RedirectStatusCode = 307;
@@ -65,16 +70,8 @@ namespace CaffStore.REST
             {
                 options.SslPort = 443;
                 //options.Filters.Add(new RequireHttpsAttribute());
-            });
+            });*/
 
-            services.AddAuthorization(opt =>
-                opt.AddPolicy("admin", policy => policy.RequireClaim("admin", "true"))
-            );
-
-            services.AddAuthorization(opt =>
-                opt.AddPolicy("user", policy => policy.RequireClaim("admin", "false"))
-            );
-            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -84,7 +81,7 @@ namespace CaffStore.REST
             {
                 IdentityModelEventSource.ShowPII = true;
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();

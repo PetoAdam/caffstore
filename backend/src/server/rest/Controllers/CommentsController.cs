@@ -24,10 +24,15 @@ namespace CaffStore.REST.Controllers
 
 
         // GET: api/Comments/5
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Models.Comment>> GetComment(int id)
+        public async Task<ActionResult<Models.Comment>> GetComment(int id, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
             var comment = await dbContext.Comments.FindAsync(id);
 
             if (comment == null)
@@ -41,10 +46,15 @@ namespace CaffStore.REST.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [Authorize]
+        //[Authorize]
         [HttpPost]
-        public async Task<ActionResult<Models.Comment>> PostComment(NewComment newComment)
+        public async Task<ActionResult<Models.Comment>> PostComment(NewComment newComment, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
             var dbComment = new Dal.Comment
             {
                 Text = newComment.Text,
@@ -59,10 +69,15 @@ namespace CaffStore.REST.Controllers
         }
 
         // DELETE: api/Comments/5
-        [Authorize(Policy = "admin")]
+        //[Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Models.Comment>> DeleteComment(int id)
+        public async Task<ActionResult<Models.Comment>> DeleteComment(int id, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth != Authorization.Auth.Admin){
+                return Unauthorized();
+            }
+
             var comment = await dbContext.Comments.FindAsync(id);
             if (comment == null)
             {

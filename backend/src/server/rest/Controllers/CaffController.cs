@@ -27,19 +27,29 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET: api/caffs
-        [Authorize]
+        //[Authorize]
         [HttpGet]
-        public async Task<ActionResult<Models.CaffPreview[]>> List()
+        public async Task<ActionResult<Models.CaffPreview[]>> List([FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
             var dbCaffs = await dbContext.Caffs.ToListAsync();
             return dbCaffs.Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
         }
 
         // GET api/caffs/5
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Models.CaffPreview>> Get(int id)
+        public async Task<ActionResult<Models.CaffPreview>> Get(int id, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
             var caff = await dbContext.Caffs.SingleOrDefaultAsync(p => p.Id == id);
             if (caff == null)
             {
@@ -49,38 +59,57 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<Models.CaffPreview[]>> GetByName([FromQuery] string name)
+        //[Authorize]
+        [HttpGet("byName")]
+        public async Task<ActionResult<Models.CaffPreview[]>> GetByName([FromQuery] string name, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
             var dbCaffs = await dbContext.Caffs.ToListAsync();
             return dbCaffs.Where(caff => caff.Name.Contains(name)).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
         }
 
         // GET api/caffs
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<Models.CaffPreview[]>> GetByUserId([FromQuery] int userId)
+        //[Authorize]
+        [HttpGet("byUserId")]
+        public async Task<ActionResult<Models.CaffPreview[]>> GetByUserId([FromQuery] int userId, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
             var dbCaffs = await dbContext.Caffs.ToListAsync();
             return dbCaffs.Where(caff => caff.UploaderId == userId).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
         }
 
         // GET api/caffs
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<Models.CaffPreview[]>> GetByEmail([FromQuery] string email)
+        //[Authorize]
+        [HttpGet("byEmail")]
+        public async Task<ActionResult<Models.CaffPreview[]>> GetByEmail([FromQuery] string email, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
             var dbCaffs = await dbContext.Caffs.ToListAsync();
             return dbCaffs.Where(caff => dbContext.Users.FirstOrDefault(u => u.Email == email).Id == caff.UploaderId).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
         }
 
         // PUT api/caffs/5
-        [Authorize(Policy = "admin")]
+        //[Authorize]
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult> Modify([FromRoute] int id, [FromBody] Models.NewCaff updated)
+        public async Task<ActionResult> Modify([FromRoute] int id, [FromBody] Models.NewCaff updated, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth != Authorization.Auth.Admin){
+                return Unauthorized();
+            }
+
             var dbProduct = await dbContext.Caffs.SingleOrDefaultAsync(p => p.Id == id);
 
             // If no instance with exists with given id, return
@@ -121,10 +150,14 @@ namespace CaffStore.REST.Controllers
         }
 
         // POST api/caffs
-        [Authorize(Policy = "admin")]
+        //[Authorize]
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] Models.NewCaff newCaff)
+        public async Task<ActionResult> Create([FromBody] Models.NewCaff newCaff, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
 
             var dbCaff = new Dal.Caff()
             {
@@ -142,10 +175,15 @@ namespace CaffStore.REST.Controllers
         }
 
         // DELETE: api/caffs/5
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Models.CaffPreview>> DeleteCaff(int id)
+        public async Task<ActionResult<Models.CaffPreview>> DeleteCaff(int id, [FromHeader] string authorization)
         {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth != Authorization.Auth.Admin){
+                return Unauthorized();
+            }
+
             var caff = await dbContext.Caffs.FindAsync(id);
             if (caff == null)
             {
