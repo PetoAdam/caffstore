@@ -10,9 +10,9 @@ namespace CaffStore.REST.Models
     {
         public CaffFile(byte[] file)
         {
-            File = file;
+            File = Services.Base64Converter.ConvertToBase64String(file, Services.Base64Converter.GIF_HEADER);
         }
-        public byte[] File { get; set; }
+        public string File { get; set; }
 
     }
 }

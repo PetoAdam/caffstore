@@ -55,7 +55,7 @@ namespace CaffStore.REST.Controllers
             return new Models.CaffPreview(caff.Id, caff.Name, caff.CreationDate, caff.CaffFile, caff.UploaderId, dbContext.Comments.Where(m => m.CaffId == caff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList());
         }
 
-        // GET api/caffs
+        // GET api/caffs/byName
         [HttpGet("byName")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByName([FromQuery] string name, [FromHeader] string authorization)
         {
@@ -67,7 +67,7 @@ namespace CaffStore.REST.Controllers
             return dbCaffs.Where(caff => caff.Name.Contains(name)).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
         }
 
-        // GET api/caffs
+        // GET api/caffs/byUserId
         [HttpGet("byUserId")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByUserId([FromQuery] int userId, [FromHeader] string authorization)
         {
@@ -80,7 +80,7 @@ namespace CaffStore.REST.Controllers
             return dbCaffs.Where(caff => caff.UploaderId == userId).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
         }
 
-        // GET api/caffs
+        // GET api/caffs/byEmail
         [HttpGet("byEmail")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByEmail([FromQuery] string email, [FromHeader] string authorization)
         {
@@ -91,6 +91,23 @@ namespace CaffStore.REST.Controllers
 
             var dbCaffs = await dbContext.Caffs.ToListAsync();
             return dbCaffs.Where(caff => dbContext.Users.FirstOrDefault(u => u.Email == email).Id == caff.UploaderId).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
+        }
+
+        // GET api/caffs/download
+        [HttpGet("download")]
+        public async Task<ActionResult<Models.CaffFile>> GetCaff([FromQuery] int id, [FromHeader] string authorization)
+        {
+            var auth = await Authorization.IsAdmin(authorization);
+            if(auth == Authorization.Auth.BadToken){
+                return Unauthorized();
+            }
+
+            var caff = await dbContext.Caffs.SingleOrDefaultAsync(p => p.Id == id);
+            if (caff == null)
+            {
+                return BadRequest();
+            }
+            return new Models.CaffFile(caff.CaffFile);
         }
 
         // PUT api/caffs/5
