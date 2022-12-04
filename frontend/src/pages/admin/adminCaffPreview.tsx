@@ -16,7 +16,10 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { CommentComponent } from "../../components/commentComponent";
+import { caffService } from "../../services/caffService";
+import { commentService } from "../../services/commentService";
 import { useStore } from "../../stores";
+import { Caff } from "../../types/Caff";
 import ErrorPage from "../error";
 
 export const AdminCaffPreview = observer(() => {
@@ -29,31 +32,35 @@ export const AdminCaffPreview = observer(() => {
 
   const onDeleteComment = async (id: number) => {
     //TODO - delete comment - check with backend
-    let deletedComment = await commentService.deleteComment(id)
-    console.log(deletedComment)
+    let deletedComment = await commentService.deleteComment(id);
+    console.log(deletedComment);
   };
 
   const deleteCaff = async () => {
     //TODO - delete caff - chack with backend
     if (caff != undefined) {
-      let deletedCaff = await caffService.deleteCaff(caff.id)
+      let deletedCaff = await caffService.deleteCaff(caff.id);
     }
-  }
+  };
 
   const modifyCaff = async () => {
     //TODO - modify caff - check with backend
-    if (caff != undefined && caffName != undefined && caffUploader != undefined) {
-      let newCaff: Caff = {
+    if (
+      caff != undefined &&
+      caffName != undefined &&
+      caffUploader != undefined
+    ) {
+      const newCaff: Caff = {
         id: 0,
         name: caffName,
-        creationDate: caff?.creationDate,
+        date: caff?.date,
         file: caff?.file,
         uploader: caffUploader,
         comments: caff?.comments,
-        uploaderId: caff?.uploaderId
-      }
-      let modifiedCaff = await caffService.modifyCaff(caff?.id, newCaff)
-      console.log(modifiedCaff)
+        uploaderId: caff.uploaderId,
+      };
+      let modifiedCaff = await caffService.modifyCaff(caff?.id, newCaff);
+      console.log(modifiedCaff);
     }
   };
 
@@ -131,11 +138,11 @@ export const AdminCaffPreview = observer(() => {
                       backgroundColor: darken("#ff0000", 0.3),
                     },
                   }}
-                  onClick={onDelete}
+                  onClick={deleteCaff}
                 >
                   Delete
                 </Button>
-                <Button variant="contained" onClick={onSave}>
+                <Button variant="contained" onClick={modifyCaff}>
                   Save
                 </Button>
               </Box>

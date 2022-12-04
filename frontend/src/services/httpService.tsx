@@ -1,123 +1,63 @@
-class HttpService {
-    accessToken = ""
-    async get(url: string) {
-        try {
-            let requestInit: any = {}
-            requestInit = {
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }
-            if (typeof (this.accessToken) != "undefined") {
-                requestInit.headers['Authorization'] = `Bearer ${this.accessToken}`
-            }
-            let response = await fetch(url, requestInit)
-            if (response.ok) {
-                return await response.json()
-            }
-        } catch (error) {
-            console.log(error)
-        }
-        return undefined;
-    }
+import { auth } from "../firebase";
 
-    async post(url: string, content: any) {
-        try {
-            let requestInit: any = {}
-            requestInit = {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(content)
-            }
+export const getRequest = async (url: string) => {
+  const token = await auth.currentUser?.getIdToken(true);
 
-            if (typeof (this.accessToken) != "undefined") {
-                requestInit.headers['Authorization'] = `Bearer ${this.accessToken}`
-            }
-            let response = await fetch(url, requestInit)
-            if (response.ok) {
-                return await response.json()
-            }
-        } catch (error) {
-            console.log(error)
-        }
-        return undefined;
-    }
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token!,
+    },
+  });
+  return response;
+};
 
-    async put(url: string, body: any) {
-        try {
-            let requestInit: any = {}
-            requestInit = {
-                method: "PUT",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            }
+export const postRequest = async (url: string, content: any) => {
+  const token = await auth.currentUser?.getIdToken(true);
 
-            if (typeof (this.accessToken) != "undefined") {
-                requestInit.headers['Authorization'] = `Bearer ${this.accessToken}`
-            }
-            let response = await fetch(url, requestInit)
-            if (response.ok) {
-                return response.ok
-            }
-        } catch (error) {
-            console.log(error)
-        }
-        return undefined;
-    }
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token!,
+    },
+    body: JSON.stringify({
+      content,
+    }),
+  });
+  return response;
+};
 
-    async delete(url: string) {
-        try {
-            let requestInit: any = {}
-            requestInit = {
-                method: "DELETE",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            }
+export const putRequest = async (url: string, content: any) => {
+  const token = await auth.currentUser?.getIdToken(true);
 
-            if (typeof (this.accessToken) != "undefined") {
-                requestInit.headers['Authorization'] = `Bearer ${this.accessToken}`
-            }
-            let response = await fetch(url, requestInit)
-            if (response.ok) {
-                return response.ok
-            }
-        } catch (error) {
-            console.log(error)
-        }
-        return undefined;
-    }
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token!,
+    },
+    body: JSON.stringify({
+      content,
+    }),
+  });
+  return response;
+};
 
-    async auth(url: string, content: any) {
-        try {
-            let requestInit: RequestInit = {}
-            requestInit = {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(content),
-                
-            }
-            let response = await fetch(url, requestInit)
-            if (response.ok) {
-                return await response.json()
-            }
-        } catch (error) {
-            console.log(error)
-        }
-        return undefined;
-    //await fetch("/api/users/login")
-    }
-    
-}
+export const deleteRequest = async (url: string) => {
+  const token = await auth.currentUser?.getIdToken(true);
 
-export const httpService = new HttpService()
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token!,
+    },
+  });
+  return response;
+};

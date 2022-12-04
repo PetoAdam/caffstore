@@ -27,56 +27,55 @@ export const Upload = () => {
   }, []);
 
   const getBase64 = (file: File) => {
-    return new Promise(resolve => {
-      let reader = new FileReader()
-      reader.readAsDataURL(file)
+    return new Promise((resolve) => {
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
       reader.onload = () => {
-        let baseURL = reader.result
-        resolve(baseURL)
+        let baseURL = reader.result;
+        resolve(baseURL);
       };
     });
-  }
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
-      let file = event.target.files[0]
-      let props = (file.name).split('.')
-      let extension = props[props.length - 1]
-      console.log(extension)
+      let file = event.target.files[0];
+      let props = file.name.split(".");
+      let extension = props[props.length - 1];
+      console.log(extension);
       if (extension.toLowerCase() == "caff") {
-        setFileError("")
+        setFileError("");
         getBase64(file)
-          .then(result => {
+          .then((result) => {
             console.log("File Is", file);
-            console.log(result)
-            setCaffFile(result as string)
+            console.log(result);
+            setCaffFile(result as string);
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
-      }
-      else {
-        setFileError("You have to attach a file with 'caff' extension!")
+      } else {
+        setFileError("You have to attach a file with 'caff' extension!");
       }
     }
-  }
+  };
 
   const uploadCaff = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (name && (fileError == "")) {
-      let date = new Date()
+    if (name && fileError == "") {
+      let date = new Date();
       let caff: Caff = {
         id: 0,
         name: name,
-        creationDate: date.toString(),
+        date: date.toString(),
         file: caffFile,
         uploader: String(userStore.user?.username),
-        uploaderId: userStore.user?.userId
-      }
-      console.log(caff)
+        uploaderId: userStore.user?.uid!,
+      };
+      console.log(caff);
       // TODO - upload caff - check with backend
-      let casesRes = await caffService.addCaff(caff)
-      console.log(casesRes)
+      let casesRes = await caffService.addCaff(caff);
+      console.log(casesRes);
     }
   };
 
@@ -92,7 +91,7 @@ export const Upload = () => {
             alignItems: "center",
           }}
         >
-          <Typography component="h1" variant="h5" fontFamily={'sans-serif'}>
+          <Typography component="h1" variant="h5" fontFamily={"sans-serif"}>
             Upload your CAFF file!
           </Typography>
           <form onSubmit={uploadCaff}>
@@ -107,14 +106,20 @@ export const Upload = () => {
               helperText={nameError ? nameError : ""}
               value={name}
               onChange={(event) => {
-                setName(event.target.value)
-                setNameError("")
+                setName(event.target.value);
+                setNameError("");
               }}
             />
-            <input type="file" accept=".caff" required onChange={(event) => { handleFileChange(event) }} style={{ marginTop: '10px' }} />
-            {(fileError != "") && (
-              <p style={{ color: "#FF0000" }}>{fileError}</p>
-            )}
+            <input
+              type="file"
+              accept=".caff"
+              required
+              onChange={(event) => {
+                handleFileChange(event);
+              }}
+              style={{ marginTop: "10px" }}
+            />
+            {fileError != "" && <p style={{ color: "#FF0000" }}>{fileError}</p>}
             <Button
               type="submit"
               fullWidth
@@ -126,7 +131,6 @@ export const Upload = () => {
           </form>
         </Box>
       </Container>
-
     </ThemeProvider>
-  )
+  );
 };

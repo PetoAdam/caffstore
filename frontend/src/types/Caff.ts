@@ -11,6 +11,7 @@ export type Caff = {
   file: any;
   uploader: string;
   comments?: Comment[];
+  uploaderId: string;
   //TODO add comments to backend
 };
 

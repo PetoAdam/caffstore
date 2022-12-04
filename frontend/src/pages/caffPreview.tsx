@@ -15,6 +15,7 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { CommentComponent } from "../components/commentComponent";
+import { commentService } from "../services/commentService";
 import { useStore } from "../stores";
 
 import ErrorPage from "./error";
