@@ -27,20 +27,34 @@ export const AdminCaffPreview = observer(() => {
   const [caffName, setCaffName] = useState(caff?.name);
   const [caffUploader, setCaffUploader] = useState(caff?.uploader);
 
-  const onDeleteComment = (id: number) => {
-    //TODO call delete comment endpoint
+  const onDeleteComment = async (id: number) => {
+    //TODO - delete comment - check with backend
+    let deletedComment = await commentService.deleteComment(id)
+    console.log(deletedComment)
   };
 
-  const onDelete = () => {
-    //TODO call delete caff endpoint
-  };
+  const deleteCaff = async () => {
+    //TODO - delete caff - chack with backend
+    if (caff != undefined) {
+      let deletedCaff = await caffService.deleteCaff(caff.id)
+    }
+  }
 
-  const onSave = () => {
-    //TODO call update caff endpoint
-  };
-
-  const editCaff = () => {
-    //TODO open file upload modal and call the caff update endpoint
+  const modifyCaff = async () => {
+    //TODO - modify caff - check with backend
+    if (caff != undefined && caffName != undefined && caffUploader != undefined) {
+      let newCaff: Caff = {
+        id: 0,
+        name: caffName,
+        creationDate: caff?.creationDate,
+        file: caff?.file,
+        uploader: caffUploader,
+        comments: caff?.comments,
+        uploaderId: caff?.uploaderId
+      }
+      let modifiedCaff = await caffService.modifyCaff(caff?.id, newCaff)
+      console.log(modifiedCaff)
+    }
   };
 
   const handleCaffNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,7 +84,6 @@ export const AdminCaffPreview = observer(() => {
               sx={{ width: 500 }}
               src={caff.file}
               alt={caff.name}
-              onClick={editCaff}
             />
             <CardContent
               sx={{
