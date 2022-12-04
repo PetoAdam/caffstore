@@ -26,7 +26,7 @@ namespace CaffStore.REST.Controllers
 
         // Get the user's custom token
         // GET: api/users/login
-        [HttpGet("login")]
+        [HttpPost("login")]
         public async Task<ActionResult<CustomToken>> GetUserToken([FromBody] LoginInfo loginInfo)
         {
             var dbUsers = await dbContext.Users.ToListAsync();

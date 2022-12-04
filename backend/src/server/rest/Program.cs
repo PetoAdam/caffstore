@@ -23,16 +23,15 @@ namespace CaffStore.REST
 
             FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.FromFile("/home/ubuntu/caff-store-firebase-adminsdk-lu9y2-53f4bdc1f6.json")
-                certificateFileName
+                Credential = GoogleCredential.FromFile("/home/ubuntu/caffstore-secret/caff-store-firebase-adminsdk-lu9y2-53f4bdc1f6.json")
             });
             
             
             var config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddEnvironmentVariables()
-            .AddJsonFile("certificate.json", optional: true, reloadOnChange: true)
-            .AddJsonFile($"certificate.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("backend/src/server/rest/certificate.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"backend/src/server/rest/certificate.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
             .Build();
 
             var certificateSettings = config.GetSection("certificateSettings");
@@ -40,6 +39,7 @@ namespace CaffStore.REST
             string certificatePassword = certificateSettings.GetValue<string>("password");
             SecureString securePwd = ToSecureString(certificatePassword);
 
+            //var certificate = new X509Certificate2(ReadAllBytes("backend/src/server/rest/localhost.pfx"), securePwd, X509KeyStorageFlags.MachineKeySet);
             var certificate = new X509Certificate2(ReadAllBytes(certificateFileName), securePwd, X509KeyStorageFlags.MachineKeySet);
         
             var host = new WebHostBuilder()
@@ -47,15 +47,15 @@ namespace CaffStore.REST
                     options =>
                     {
                         options.AddServerHeader = false;
-                        options.Listen(IPAddress.Loopback, 44321, listenOptions =>
+                        options.Listen(IPAddress.Any, 44321, listenOptions =>
                         {
                             listenOptions.UseHttps(certificate);
                         });
-                        options.Listen(IPAddress.Loopback, 5001, listenOptions =>
+                        options.Listen(IPAddress.Any, 5001, listenOptions =>
                         {
                             listenOptions.UseHttps(certificate);
                         });
-                        options.Listen(IPAddress.Loopback, 5000);
+                        options.Listen(IPAddress.Any, 5000);
                     }
                 )
                 .UseConfiguration(config)

@@ -70,6 +70,11 @@ namespace CaffStore.REST
             services.AddAuthorization(opt =>
                 opt.AddPolicy("admin", policy => policy.RequireClaim("admin", "true"))
             );
+
+            services.AddAuthorization(opt =>
+                opt.AddPolicy("user", policy => policy.RequireClaim("admin", "false"))
+            );
+            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
