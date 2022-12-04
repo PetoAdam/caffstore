@@ -15,9 +15,9 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { CommentComponent } from "../components/commentComponent";
-import { commentService } from "../services/commentService";
 import { useStore } from "../stores";
-
+import { Comment } from "../types/Caff";
+import { commentService } from "../services/commentService";
 import ErrorPage from "./error";
 
 export const CaffPreview = observer(() => {
@@ -27,9 +27,25 @@ export const CaffPreview = observer(() => {
   const caff = caffStore.getCaffById(parseInt(id!));
 
   const [comment, setComment] = useState("");
+  const [commentError, setCommentError] = useState("");
 
-  const onComment = () => {
-    //todo call comment endpoint
+  const onComment = async () => {
+    if (comment == "") {
+      setCommentError("Before posting you have to write something!")
+    }
+    else {
+      setCommentError("")
+      //todo - addComment - check this with backend
+      let newComment: Comment = {
+        id: 0,
+        author: String(userStore.user?.username),
+        comment: comment
+      }
+      console.log(newComment)
+      await commentService.addComment(newComment)
+      await caffStore.getCaffs()
+      caffStore.getCaffById(parseInt(id!))
+    }
   };
 
   if (caff)
@@ -95,7 +111,7 @@ export const CaffPreview = observer(() => {
                   Upload date:
                 </Typography>
                 <Typography gutterBottom variant="h4" component="div">
-                  {caff.date.split("T")[0]}
+                  {String(caff.creationDate).split("T")[0]}
                 </Typography>
               </Box>
             </CardContent>
@@ -146,6 +162,9 @@ export const CaffPreview = observer(() => {
                 }}
                 sx={{ textAlign: "left" }}
               ></TextField>
+              {(commentError != "") && (
+                <p style={{ color: "#FF0000" }}>{commentError}</p>
+              )}
             </Grid>
           </Grid>
         </Paper>
