@@ -1,36 +1,34 @@
 {
-  "name": "caffstore-frontend",
+  "name": "caffstore",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "local": "vite",
+    "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint ./ --ext .js,.jsx,.ts,.tsx --max-warnings=0",
-    "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --quiet  --fix",
-    "prettier": "prettier \"src/**/*.{js,jsx,ts,tsx}\" --config .prettierrc --write"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@apollo/client": "3.6.9",
-    "graphql": "^16.6.0",
-    "mobx": "6.6.1",
-    "mobx-react-lite": "3.4.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-router-dom": "6.3.0"
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/icons-material": "^5.10.15",
+    "@mui/material": "^5.10.15",
+    "file-saver": "^2.0.5",
+    "firebase": "^9.14.0",
+    "mobx": "^6.7.0",
+    "mobx-persist-store": "^1.1.2",
+    "mobx-react-lite": "^3.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.3"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.11.6",
-    "@graphql-codegen/near-operation-file-preset": "2.4.1",
-    "@graphql-codegen/typed-document-node": "2.3.3",
-    "@graphql-codegen/typescript": "2.7.3",
-    "@graphql-codegen/typescript-operations": "2.5.3",
-    "@types/react": "18.0.14",
-    "@types/react-dom": "18.0.5",
-    "@vitejs/plugin-react": "1.3.2",
-    "eslint-plugin-react": "7.30.1",
-    "typescript": "4.7.4",
-    "vite": "2.9.13",
-    "vite-plugin-graphql-codegen": "2.0.1",
-    "vite-tsconfig-paths": "3.5.0"
+    "@types/file-saver": "^2.0.5",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
+    "@vitejs/plugin-react": "^2.2.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.2.3"
   }
 }

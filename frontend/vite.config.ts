@@ -1,12 +1,45 @@
 import { defineConfig } from "vite";
+
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
+
 export default defineConfig({
-  plugins: [tsconfigPaths(), react()],
+  plugins: [react()],
+
+  resolve: {
+    preserveSymlinks: true,
+  },
+
   server: {
-    port: 9000,
-    host: "0.0.0.0",
+    proxy: {
+      "/api": {
+        target: "http://petonet.ddns.net:5000/",
+
+        //target: "http://127.0.0.1:5000/",
+
+        secure: false,
+
+        changeOrigin: true,
+
+        configure: (proxy, _options) => {
+          proxy.on("error", (err, _req, _res) => {
+            console.log("proxy error", err);
+          });
+
+          proxy.on("proxyReq", (proxyReq, req, _res) => {
+            console.log("Sending Request to the Target:", req.method, req.url);
+          });
+
+          proxy.on("proxyRes", (proxyRes, req, _res) => {
+            console.log(
+              "Received Response from the Target:",
+              proxyRes.statusCode,
+              req.url
+            );
+          });
+        },
+      },
+    },
   },
 });
