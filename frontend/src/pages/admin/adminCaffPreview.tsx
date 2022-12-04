@@ -59,10 +59,6 @@ export const AdminCaffPreview = observer(() => {
     }
   };
 
-  const editCaff = () => {
-    //TODO open file upload modal and call the caff update endpoint
-  };
-
   const handleCaffNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCaffName(event.target.value);
   };
@@ -90,7 +86,6 @@ export const AdminCaffPreview = observer(() => {
               sx={{ width: 500 }}
               src={caff.file}
               alt={caff.name}
-              onClick={editCaff}
             />
             <CardContent
               sx={{

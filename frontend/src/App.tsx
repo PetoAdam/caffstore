@@ -1,8 +1,4 @@
-import {
-  BrowserRouter,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import { Pages } from "./constants/pages";
 import { AdminSignIn } from "./pages/admin/adminSignIn";
@@ -12,7 +8,7 @@ import { CustomerLayout } from "./routing/CustomerLayout";
 import { AdminLayout, ProtectedAdminLayout } from "./routing/AdminLayout";
 import { useStore } from "./stores";
 import { AdminSignOut } from "./pages/admin/adminSignOut";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { EditUsers } from "./pages/admin/editUsers";
 import { EditProducts } from "./pages/admin/adminProducts";
@@ -33,10 +29,10 @@ const App = () => {
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      await userStore.setIsLoggedIn(true);
+      userStore.isLoggedIn = true
       setIsAdmin(userStore.isAdmin);
     } else {
-      await userStore.setIsLoggedIn(false);
+      userStore.isLoggedIn = false;
       setIsAdmin(userStore.isAdmin);
     }
   });

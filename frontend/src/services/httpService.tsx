@@ -44,9 +44,8 @@ class HttpService {
             console.log(error)
         }
         return undefined;
-
     }
-    
+
     async put(url: string, body: any) {
         try {
             let requestInit: any = {}
@@ -70,7 +69,6 @@ class HttpService {
             console.log(error)
         }
         return undefined;
-
     }
 
     async delete(url: string) {
@@ -95,8 +93,31 @@ class HttpService {
             console.log(error)
         }
         return undefined;
-
     }
+
+    async login(url: string, content: any) {
+        try {
+            let requestInit: RequestInit = {}
+            requestInit = {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(content),
+                
+            }
+            let response = await fetch(url, requestInit)
+            if (response.ok) {
+                return await response.json()
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        return undefined;
+    //await fetch("/api/users/login")
+    }
+    
 }
 
 export const httpService = new HttpService()

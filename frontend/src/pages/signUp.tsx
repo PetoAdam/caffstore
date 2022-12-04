@@ -46,7 +46,7 @@ export function SignUp() {
             isAdmin: false,
             uid: user.uid,
           }).then(() => {
-            userStore.setIsLoggedIn(true);
+            //userStore.setIsLoggedIn(true);
             navigate("/");
           });
         })
