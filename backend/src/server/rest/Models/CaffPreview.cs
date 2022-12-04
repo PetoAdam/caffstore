@@ -20,6 +20,11 @@ namespace CaffStore.REST.Models
             Comments = comments;
         }
 
+        public CaffPreview()
+        {
+            
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
@@ -27,7 +32,7 @@ namespace CaffStore.REST.Models
         public string UploaderId { get; set; }
         public List<Comment> Comments { get; set; }
 
-        private string Parse(byte[] caff)
+        public string Parse(byte[] caff)
         {
             if(caff == null)
             {

@@ -84,7 +84,7 @@ namespace CaffStore.REST.Controllers
             var user = await FirebaseAuth.DefaultInstance.GetUserAsync(id);
             if(user == null)
             {
-                return null;
+                return "Anonymus";
             }
             return user.Email;
         }
