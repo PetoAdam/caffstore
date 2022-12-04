@@ -6,11 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Http;
-
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Certificate;
 
 namespace CaffStore.REST
 {
@@ -56,22 +52,8 @@ namespace CaffStore.REST
                     ValidAudience = Configuration["Jwt:Firebase:ValidAudience"]
                 };
             });
-
-            /*services.AddAuthentication(
-                CertificateAuthenticationDefaults.AuthenticationScheme)
-                .AddCertificate();
-
-            services.AddHttpsRedirection(options => 
-            {
-                options.RedirectStatusCode = 307;
-                options.HttpsPort = 5001;
-            });
-            services.AddMvc(options =>
-            {
-                options.SslPort = 443;
-                //options.Filters.Add(new RequireHttpsAttribute());
-            });*/
-
+            
+            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -81,7 +63,7 @@ namespace CaffStore.REST
             {
                 IdentityModelEventSource.ShowPII = true;
             }
-            //app.UseHttpsRedirection();
+
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();

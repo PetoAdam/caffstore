@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using MySql.Data.EntityFrameworkCore;
-//using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CaffStore.REST.Dal

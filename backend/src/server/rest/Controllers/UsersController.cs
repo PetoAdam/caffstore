@@ -52,7 +52,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET: api/users
-        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<Models.User[]>> GetUser([FromHeader] string authorization)
         {
@@ -65,7 +64,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET: api/users/5
-        //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.User>> GetUser(int id, [FromHeader] string authorization)
         {
@@ -87,7 +85,6 @@ namespace CaffStore.REST.Controllers
         // PUT: api/users/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        //[Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] NewUser newUser, [FromHeader] string authorization)
         {
@@ -175,7 +172,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // DELETE: api/users/5
-        //[Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Models.User>> DeleteUser(int id, [FromHeader] string authorization)
         {

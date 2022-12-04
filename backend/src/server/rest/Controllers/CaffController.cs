@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace CaffStore.REST.Controllers
 {
-    //TODO: remove commented [Authorize] when firebase is ready.
 
     [Route("api/caffs")]
     [ApiController]
@@ -27,7 +26,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET: api/caffs
-        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<Models.CaffPreview[]>> List([FromHeader] string authorization)
         {
@@ -41,7 +39,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs/5
-        //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.CaffPreview>> Get(int id, [FromHeader] string authorization)
         {
@@ -59,7 +56,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs
-        //[Authorize]
         [HttpGet("byName")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByName([FromQuery] string name, [FromHeader] string authorization)
         {
@@ -72,7 +68,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs
-        //[Authorize]
         [HttpGet("byUserId")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByUserId([FromQuery] int userId, [FromHeader] string authorization)
         {
@@ -86,7 +81,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // GET api/caffs
-        //[Authorize]
         [HttpGet("byEmail")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByEmail([FromQuery] string email, [FromHeader] string authorization)
         {
@@ -100,7 +94,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // PUT api/caffs/5
-        //[Authorize]
         [HttpPut]
         [Route("{id}")]
         public async Task<ActionResult> Modify([FromRoute] int id, [FromBody] Models.NewCaff updated, [FromHeader] string authorization)
@@ -150,7 +143,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // POST api/caffs
-        //[Authorize]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] Models.NewCaff newCaff, [FromHeader] string authorization)
         {
@@ -175,7 +167,6 @@ namespace CaffStore.REST.Controllers
         }
 
         // DELETE: api/caffs/5
-        //[Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Models.CaffPreview>> DeleteCaff(int id, [FromHeader] string authorization)
         {
