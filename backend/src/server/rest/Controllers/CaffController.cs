@@ -29,20 +29,25 @@ namespace CaffStore.REST.Controllers
         [HttpGet]
         public async Task<ActionResult<Models.CaffPreview[]>> List([FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
 
             var dbCaffs = await dbContext.Caffs.ToListAsync();
-            return dbCaffs.Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
+            List<Models.CaffPreview> caffs = new List<Models.CaffPreview>();
+            foreach(var caff in dbCaffs){
+                var caffPreview = new Models.CaffPreview(caff.Id, caff.Name, caff.CreationDate, caff.CaffFile, caff.UploaderId, dbContext.Comments.Where(m => m.CaffId == caff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, Authorization.GetEmailFromId(m.UploaderId) ?? "Anonymous")).ToList());
+                caffs.Add(caffPreview);
+            }
+            return caffs.ToArray();
         }
 
         // GET api/caffs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.CaffPreview>> Get(int id, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
@@ -52,52 +57,39 @@ namespace CaffStore.REST.Controllers
             {
                 return BadRequest();
             }
-            return new Models.CaffPreview(caff.Id, caff.Name, caff.CreationDate, caff.CaffFile, caff.UploaderId, dbContext.Comments.Where(m => m.CaffId == caff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList());
+            return new Models.CaffPreview(caff.Id, caff.Name, caff.CreationDate, caff.CaffFile, caff.UploaderId, dbContext.Comments.Where(m => m.CaffId == caff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, Authorization.GetEmailFromId(m.UploaderId) ?? "Anonymous")).ToList());
         }
 
         // GET api/caffs/byName
         [HttpGet("byName")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByName([FromQuery] string name, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
             var dbCaffs = await dbContext.Caffs.ToListAsync();
-            return dbCaffs.Where(caff => caff.Name.Contains(name)).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
+            return dbCaffs.Where(caff => caff.Name.Contains(name)).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, Authorization.GetEmailFromId(m.UploaderId) ?? "Anonymous")).ToList())).ToArray();
         }
 
         // GET api/caffs/byUserId
         [HttpGet("byUserId")]
         public async Task<ActionResult<Models.CaffPreview[]>> GetByUserId([FromQuery] int userId, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
 
             var dbCaffs = await dbContext.Caffs.ToListAsync();
-            return dbCaffs.Where(caff => caff.UploaderId == userId).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
-        }
-
-        // GET api/caffs/byEmail
-        [HttpGet("byEmail")]
-        public async Task<ActionResult<Models.CaffPreview[]>> GetByEmail([FromQuery] string email, [FromHeader] string authorization)
-        {
-            var auth = await Authorization.IsAdmin(authorization);
-            if(auth == Authorization.Auth.BadToken){
-                return Unauthorized();
-            }
-
-            var dbCaffs = await dbContext.Caffs.ToListAsync();
-            return dbCaffs.Where(caff => dbContext.Users.FirstOrDefault(u => u.Email == email).Id == caff.UploaderId).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())).ToArray();
+            return dbCaffs.Where(caff => caff.UploaderId == userId).Select(c => new Models.CaffPreview(c.Id, c.Name, c.CreationDate, c.CaffFile, c.UploaderId, dbContext.Comments.Where(m => m.CaffId == c.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, Authorization.GetEmailFromId(m.UploaderId) ?? "Anonymous")).ToList())).ToArray();
         }
 
         // GET api/caffs/download
         [HttpGet("download")]
         public async Task<ActionResult<Models.CaffFile>> GetCaff([FromQuery] int id, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
@@ -115,9 +107,13 @@ namespace CaffStore.REST.Controllers
         [Route("{id}")]
         public async Task<ActionResult> Modify([FromRoute] int id, [FromBody] Models.NewCaff updated, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth != Authorization.Auth.Admin){
                 return Unauthorized();
+            }
+
+            if(updated.Name == null || updated.File == null){
+                return BadRequest();
             }
 
             var dbProduct = await dbContext.Caffs.SingleOrDefaultAsync(p => p.Id == id);
@@ -163,31 +159,36 @@ namespace CaffStore.REST.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] Models.NewCaff newCaff, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
 
+            if(newCaff.Name == null || newCaff.File == null){
+                return BadRequest();
+            }
+
+            var userEmail = await Authorization.GetEmail(authorization);
             var dbCaff = new Dal.Caff()
             {
                 Name = newCaff.Name,
                 CreationDate = DateTime.Now,
                 CaffFile = Services.Base64Converter.ConvertToByteArray(newCaff.File),
-                UploaderId = newCaff.UploaderId
+                UploaderId = await Authorization.GetUid(authorization)
             };
 
             // Save to DB
             dbContext.Caffs.Add(dbCaff);
             await dbContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = dbCaff.Id }, new Models.CaffPreview(dbCaff.Id, dbCaff.Name, dbCaff.CreationDate, dbCaff.CaffFile, dbCaff.UploaderId, dbContext.Comments.Where(m => m.CaffId == dbCaff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList())); // telling where the inserted item can be found
+            return CreatedAtAction(nameof(Get), new { id = dbCaff.Id }, new Models.CaffPreview(dbCaff.Id, dbCaff.Name, dbCaff.CreationDate, dbCaff.CaffFile, dbCaff.UploaderId, dbContext.Comments.Where(m => m.CaffId == dbCaff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, Authorization.GetEmailFromId(m.UploaderId) ?? "Anonymous")).ToList())); // telling where the inserted item can be found
         }
 
         // DELETE: api/caffs/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Models.CaffPreview>> DeleteCaff(int id, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth != Authorization.Auth.Admin){
                 return Unauthorized();
             }
@@ -205,7 +206,7 @@ namespace CaffStore.REST.Controllers
             dbContext.Caffs.Remove(caff);
             await dbContext.SaveChangesAsync();
 
-            return new Models.CaffPreview(caff.Id, caff.Name, caff.CreationDate, caff.CaffFile, caff.UploaderId, dbContext.Comments.Where(m => m.CaffId == caff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == m.UserId).Name)).ToList());
+            return new Models.CaffPreview(caff.Id, caff.Name, caff.CreationDate, caff.CaffFile, caff.UploaderId, dbContext.Comments.Where(m => m.CaffId == caff.Id).Select(m => new Models.Comment(m.Id, m.Text, m.CreationDate, m.UserId, m.CaffId, Authorization.GetEmailFromId(m.UploaderId) ?? "Anonymous")).ToList());
         }
 
         private bool CaffExists(int id)

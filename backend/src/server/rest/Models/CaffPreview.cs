@@ -9,7 +9,7 @@ namespace CaffStore.REST.Models
 {
     public class CaffPreview
     {
-        public CaffPreview(int id, string name, DateTime creationDate, byte[] file, int uploaderId, List<Comment> comments)
+        public CaffPreview(int id, string name, DateTime creationDate, byte[] file, string uploaderId, List<Comment> comments)
         {
             Id = id;
             Name = name;
@@ -24,7 +24,7 @@ namespace CaffStore.REST.Models
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
         public string File { get; set; }
-        public int UploaderId { get; set; }
+        public string UploaderId { get; set; }
         public List<Comment> Comments { get; set; }
 
         private string Parse(byte[] caff)
@@ -67,7 +67,14 @@ namespace CaffStore.REST.Models
             }
 
             // Convert to base64 string
-            byte[] imageArray = System.IO.File.ReadAllBytes(Path.Combine(pwd, "..", "..", "parser", "build", "out.gif"));
+            string gifPath = Path.Combine(pwd, "..", "..", "parser", "build", "out.gif");
+
+            if(!System.IO.File.Exists(gifPath))
+            {
+                return null;
+            }
+
+            byte[] imageArray = System.IO.File.ReadAllBytes(gifPath);
             string base64 = Services.Base64Converter.ConvertToBase64String(imageArray, Services.Base64Converter.GIF_HEADER);
 
             // Delete unneccessary files

@@ -11,6 +11,6 @@ namespace CaffStore.REST.Dal
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
         public byte[] CaffFile { get; set; }
-        public int UploaderId { get; set; }
+        public string UploaderId { get; set; }
     }
 }

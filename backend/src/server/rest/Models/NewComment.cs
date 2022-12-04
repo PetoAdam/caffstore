@@ -9,7 +9,7 @@ namespace CaffStore.REST.Models
     {
         public string Text { get; set; }
         public DateTime CreationDate { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public int CaffId { get; set; }
     }
 }

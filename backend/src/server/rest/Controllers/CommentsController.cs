@@ -27,7 +27,7 @@ namespace CaffStore.REST.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.Comment>> GetComment(int id, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
@@ -39,7 +39,7 @@ namespace CaffStore.REST.Controllers
                 return NotFound();
             }
 
-            return new Models.Comment(comment.Id, comment.Text, comment.CreationDate, comment.UserId, comment.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == comment.UserId).Name);
+            return new Models.Comment(comment.Id, comment.Text, comment.CreationDate, comment.UserId, comment.CaffId, await Authorization.GetEmailFromId(comment.UserId) ?? "Anonymous");
         }
 
         // POST: api/Comments
@@ -48,29 +48,34 @@ namespace CaffStore.REST.Controllers
         [HttpPost]
         public async Task<ActionResult<Models.Comment>> PostComment(NewComment newComment, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
 
+            if(newComment.Text == null || newComment.CaffId <= 0){
+                return BadRequest();
+            }
+
+            var userEmail = await Authorization.GetEmail(authorization);
             var dbComment = new Dal.Comment
             {
                 Text = newComment.Text,
                 CreationDate = newComment.CreationDate,
-                UserId = newComment.UserId,
+                UserId = await Authorization.GetUid(authorization),
                 CaffId = newComment.CaffId,
             };
             dbContext.Comments.Add(dbComment);
             await dbContext.SaveChangesAsync();
 
-            return CreatedAtAction("GetComment", new { id = dbComment.Id }, new Models.Comment(dbComment.Id, dbComment.Text, dbComment.CreationDate, dbComment.UserId, dbComment.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == dbComment.UserId).Name));
+            return CreatedAtAction("GetComment", new { id = dbComment.Id }, new Models.Comment(dbComment.Id, dbComment.Text, dbComment.CreationDate, dbComment.UserId, dbComment.CaffId, await Authorization.GetEmailFromId(dbComment.UserId) ?? "Anonymous"));
         }
 
         // DELETE: api/Comments/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Models.Comment>> DeleteComment(int id, [FromHeader] string authorization)
         {
-            var auth = await Authorization.IsAdmin(authorization);
+            var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth != Authorization.Auth.Admin){
                 return Unauthorized();
             }
@@ -84,7 +89,7 @@ namespace CaffStore.REST.Controllers
             dbContext.Comments.Remove(comment);
             await dbContext.SaveChangesAsync();
 
-            return new Models.Comment(comment.Id, comment.Text, comment.CreationDate, comment.UserId, comment.CaffId, dbContext.Users.FirstOrDefault(u => u.Id == comment.UserId).Name);
+            return new Models.Comment(comment.Id, comment.Text, comment.CreationDate, comment.UserId, comment.CaffId, await Authorization.GetEmailFromId(comment.UserId) ?? "Anonymous");
         }
     }
 }

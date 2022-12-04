@@ -10,6 +10,8 @@ namespace CaffStore.REST.Services
     {
         public static string GIF_HEADER = "data:image/gif;base64,";
 
+        public static string CAFF_HEADER = "data:application/octet-stream;base64,";
+
         public static byte[] ConvertToByteArray(string base64)
         {
             if (base64 == null)

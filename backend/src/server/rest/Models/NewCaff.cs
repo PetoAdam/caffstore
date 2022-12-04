@@ -9,6 +9,6 @@ namespace CaffStore.REST.Models
     {
         public string Name { get; set; }
         public string File { get; set; }
-        public int UploaderId { get; set; }
+        public string UploaderId { get; set; }
     }
 }
