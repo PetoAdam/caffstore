@@ -111,7 +111,7 @@ export const CaffPreview = observer(() => {
                   Upload date:
                 </Typography>
                 <Typography gutterBottom variant="h4" component="div">
-                  {String(caff.date).split("T")[0]}
+                  {String(caff.creationDate).split("T")[0]}
                 </Typography>
               </Box>
             </CardContent>

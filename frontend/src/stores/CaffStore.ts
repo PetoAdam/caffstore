@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
-import { makePersistable, PersistStoreMap } from "mobx-persist-store";
+import { makePersistable } from "mobx-persist-store";
 import { caffService } from "../services/caffService";
-import { Caff, caffMock, caffMock2 } from "../types/Caff";
+import { Caff } from "../types/Caff";
 
 export default class CaffStore {
   caffs: Caff[] = [];
@@ -18,8 +18,21 @@ export default class CaffStore {
 
   async getCaffs() {
     // TODO - get caffs - check with backend
-    this.caffs = await caffService.getCaffs()
-    
+    let result: any = await caffService.getCaffs()
+    result.forEach((caff: Caff) => {
+      let addCaff: Caff = {
+        id: caff.id,
+        name: caff.name,
+        creationDate: caff.creationDate,
+        file: caff.file,
+        uploader: caff.uploader,
+        uploaderId: caff.uploaderId,
+        comments: caff.comments
+      }
+      this.caffs.push(addCaff)
+      console.log(caff)
+    });
+  console.log(this.caffs)
     //this.caffs = [];
     //this.caffs.push(caffMock);
     //this.caffs.push(caffMock2);

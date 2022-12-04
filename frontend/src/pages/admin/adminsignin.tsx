@@ -37,7 +37,7 @@ export function AdminSignIn() {
     event.preventDefault();
     if (email && password)
       userStore.login(email, password).then(() => {
-        if (!userStore.isAdmin) setEmailError("You are not an admin");
+        if (!userStore.user.isAdmin) setEmailError("You are not an admin");
         else navigate("/admin");
       });
     else if (!email) setEmailError("Email is missing");

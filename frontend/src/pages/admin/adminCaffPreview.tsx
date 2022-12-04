@@ -49,10 +49,11 @@ export const AdminCaffPreview = observer(() => {
       let newCaff: Caff = {
         id: 0,
         name: caffName,
-        date: caff?.date,
+        creationDate: caff?.creationDate,
         file: caff?.file,
         uploader: caffUploader,
-        comments: caff?.comments
+        comments: caff?.comments,
+        uploaderId: caff?.uploaderId
       }
       let modifiedCaff = await caffService.modifyCaff(caff?.id, newCaff)
       console.log(modifiedCaff)
@@ -111,7 +112,7 @@ export const AdminCaffPreview = observer(() => {
                 onChange={handleCaffUploaderChange}
               />
               <TextField
-                defaultValue={caff.date.split("T")[0]}
+                defaultValue={caff.creationDate.split("T")[0]}
                 size="small"
                 sx={rowStyle}
                 label="Upload date"

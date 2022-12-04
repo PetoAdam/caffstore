@@ -20,11 +20,12 @@ export const Products = () => {
         spacing={3}
         sx={{ margin: 0 }}
       >
-        {caffStore.caffs.map((caff, index) => (
-          <Grid item xs={12} md={6} lg={3} key={"caff" + index}>
-            <CaffProductComponent caff={caff} />
-          </Grid>
-        ))}
+        {(caffStore.caffs != undefined) && (
+          caffStore.caffs.map((caff, index) => (
+            <Grid item xs={12} md={6} lg={3} key={"caff" + index}>
+              <CaffProductComponent caff={caff} />
+            </Grid>
+          )))}
       </Grid>
     </Box>
   );

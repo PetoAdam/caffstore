@@ -68,13 +68,15 @@ export const Upload = () => {
       let caff: Caff = {
         id: 0,
         name: name,
-        date: date.toISOString(),
+        creationDate: date.toString(),
         file: caffFile,
-        uploader: String(userStore.user?.username)
+        uploader: String(userStore.user?.username),
+        uploaderId: userStore.user?.userId
       }
       console.log(caff)
       // TODO - upload caff - check with backend
       let casesRes = await caffService.addCaff(caff)
+      console.log(casesRes)
     }
   };
 

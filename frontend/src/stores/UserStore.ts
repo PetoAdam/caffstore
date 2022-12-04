@@ -11,9 +11,12 @@ import { User } from "../types/User";
 export default class UserStore {
   isLoggedIn = false;
 
-  isAdmin = false;
-
-  user: User | undefined = undefined;
+  user: User = {
+    email: "",
+    isAdmin: false,
+    userId: 0,
+    username: ""
+  };
 
   cart: Caff[] = [];
 
@@ -22,7 +25,7 @@ export default class UserStore {
     const persist = () => {
       makePersistable(this, {
         name: "userStore",
-        properties: ["isLoggedIn", "isAdmin", "user", "cart"],
+        properties: ["isLoggedIn", "user", "cart"],
         storage: window.localStorage,
       });
     };
@@ -38,27 +41,35 @@ export default class UserStore {
 
   async login(email: string, password: string) {
     try {
-      let userData = { email: email, password: password}
+      let userData = { email: email, password: password }
       let result: any = await authService.login(userData)
-      this.isAdmin = result.isAdmin
-      let tokenData = { token: result.token, returnSecureToken: true}
-      result = await authService.googleLogin(tokenData)
-      httpService.accessToken = result.idToken 
+      this.user.email = result.user.email
+      this.user.isAdmin = result.user.admin
+      this.user.userId = result.user.id
+      this.user.username = result.user.name
+      let tokenData = { token: result.token, returnSecureToken: true }
+      let resGoogle = await authService.googleLogin(tokenData)
+      httpService.accessToken = resGoogle.idToken
       this.isLoggedIn = true
       console.log(result)
     } catch (error) {
       console.log(error)
     }
-    //await this.setIsLoggedIn(true);
   }
 
   async logout() {
-    await signOut(auth).catch((error) => {
-      console.log(error.message);
-    });
-    httpService.accessToken = ""
-    //await this.setIsLoggedIn(false);
-    this.resetCart();
+    try {
+      await signOut(auth)
+      httpService.accessToken = ""
+      this.isLoggedIn = false
+      this.user.email = ""
+      this.user.isAdmin = false
+      this.user.userId = 0
+      this.user.username = ""
+      this.resetCart();
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   // async setIsLoggedIn(login: boolean) {
@@ -87,14 +98,6 @@ export default class UserStore {
   //     }
   //   }
   // }
-
-  setUser(user: User | undefined) {
-    this.user = user;
-  }
-
-  setIsAdmin(isAdmin: boolean) {
-    this.isAdmin = isAdmin;
-  }
 
   addToCart(caff: Caff) {
     if (!this.cart.find((x) => x.id === caff.id)) {

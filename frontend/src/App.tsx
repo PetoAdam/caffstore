@@ -25,15 +25,15 @@ import { Upload } from "./pages/upload";
 const App = () => {
   const { userStore } = useStore();
 
-  const [isAdmin, setIsAdmin] = useState(false);
-
+  let isAdmin = false;
+  
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userStore.isLoggedIn = true
-      setIsAdmin(userStore.isAdmin);
+      if (userStore.user != undefined) isAdmin = userStore.user.isAdmin;
     } else {
       userStore.isLoggedIn = false;
-      setIsAdmin(userStore.isAdmin);
+      if (userStore.user != undefined) isAdmin = userStore.user.isAdmin;
     }
   });
 
@@ -88,7 +88,7 @@ const App = () => {
     },
     {
       path: "/admin",
-      element: <ProtectedAdminLayout isAdmin={isAdmin || userStore.isAdmin} />,
+      element: <ProtectedAdminLayout isAdmin={isAdmin} />,
       children: [
         {
           path: "signout",
