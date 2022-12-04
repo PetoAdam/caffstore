@@ -28,7 +28,7 @@ export const CustomerAppBar = observer(() => {
               <img src={logo} alt="" style={{ width: 80 }} />
             </Link>
 
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex" } }}>
               {pages.map((page) => (
                 <Link
                   style={{ textDecoration: "none" }}

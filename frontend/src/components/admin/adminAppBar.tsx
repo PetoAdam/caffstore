@@ -23,7 +23,7 @@ export const AdminAppBar = observer(() => {
               <img src={logo} alt="" style={{ width: 80 }} />
             </Link>
 
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex" } }}>
               <Link style={{ textDecoration: "none" }} to={"/admin/users"}>
                 <Button sx={{ my: 2, color: "white", display: "block" }}>
                   Edit users

@@ -31,20 +31,19 @@ export const CaffPreview = observer(() => {
 
   const onComment = async () => {
     if (comment == "") {
-      setCommentError("Before posting you have to write something!")
-    }
-    else {
-      setCommentError("")
+      setCommentError("Before posting you have to write something!");
+    } else {
+      setCommentError("");
       //todo - addComment - check this with backend
       let newComment: Comment = {
         id: 0,
         author: String(userStore.user?.username),
-        comment: comment
-      }
-      console.log(newComment)
-      await commentService.addComment(newComment)
-      await caffStore.getCaffs()
-      caffStore.getCaffById(parseInt(id!))
+        comment: comment,
+      };
+      console.log(newComment);
+      await commentService.addComment(newComment);
+      await caffStore.getCaffs();
+      caffStore.getCaffById(parseInt(id!));
     }
   };
 
@@ -111,7 +110,7 @@ export const CaffPreview = observer(() => {
                   Upload date:
                 </Typography>
                 <Typography gutterBottom variant="h4" component="div">
-                  {String(caff.creationDate).split("T")[0]}
+                  {String(caff.date).split("T")[0]}
                 </Typography>
               </Box>
             </CardContent>
@@ -162,7 +161,7 @@ export const CaffPreview = observer(() => {
                 }}
                 sx={{ textAlign: "left" }}
               ></TextField>
-              {(commentError != "") && (
+              {commentError != "" && (
                 <p style={{ color: "#FF0000" }}>{commentError}</p>
               )}
             </Grid>
