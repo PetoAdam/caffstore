@@ -11,12 +11,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../constants/theme";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
 import { useStore } from "../stores";
 import { useNavigate } from "react-router-dom";
-import { httpService } from "../services/httpService";
 
 export function SignUp() {
   const { userStore } = useStore();
@@ -36,25 +32,7 @@ export function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (email && password === rePassword && password)
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential: any) => {
-          const user = userCredential.user;
-          httpService.accessToken = userCredential.user.accessToken
-          setDoc(doc(db, "users", user.uid), {
-            email: user.email,
-            username: user.email,
-            isAdmin: false,
-            uid: user.uid,
-          }).then(() => {
-            //userStore.setIsLoggedIn(true);
-            navigate("/");
-          });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorMessage);
-        });
+      userStore.signUp(email, password).then(() => navigate("/"));
     else if (!email) setEmailError("Email is missing");
     if (!password || !rePassword)
       setPasswordError("Password or RePassword is missing");

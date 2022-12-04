@@ -95,7 +95,7 @@ class HttpService {
         return undefined;
     }
 
-    async login(url: string, content: any) {
+    async auth(url: string, content: any) {
         try {
             let requestInit: RequestInit = {}
             requestInit = {

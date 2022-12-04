@@ -5,6 +5,7 @@ import { Caff } from "../types/Caff";
 
 export default class CaffStore {
   caffs: Caff[] = [];
+  static resetCaff: any;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -40,6 +41,10 @@ export default class CaffStore {
 
   getCaffById(id: number) {
     return this.caffs.find((x) => x.id === id);
+  }
+
+  resetCaffs(){
+    this.caffs = []
   }
 
 }

@@ -2,11 +2,14 @@ import { httpService } from "./httpService"
 
 class AuthService {
     async login(userData: any) {
-        return await httpService.login("/api/users/login", userData)
+        return await httpService.auth("/api/users/login", userData)
     }
     async googleLogin(tokenData: any){
         let url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=AIzaSyAfdUUIzsM11swGfMVGyei-qLCs0FdV6es"
-        return await httpService.login(url, tokenData)
+        return await httpService.auth(url, tokenData)
+    }
+    async signUp(userData: any){
+        return await httpService.auth("/api/users", userData)
     }
     // async signup(email, password) {
     //     this.userCredentials = await createUserWithEmailAndPassword(auth, email, password)

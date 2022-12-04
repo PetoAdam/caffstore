@@ -1,12 +1,14 @@
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { makeAutoObservable } from "mobx";
 import { makePersistable, PersistStoreMap } from "mobx-persist-store";
+import { useStore } from ".";
 import { auth } from "../firebase";
 import { authService } from "../services/authService";
 import { httpService } from "../services/httpService";
 import { Caff } from "../types/Caff";
 import { User } from "../types/User";
+import CaffStore from "./CaffStore";
 
 export default class UserStore {
   isLoggedIn = false;
@@ -57,8 +59,36 @@ export default class UserStore {
     }
   }
 
+  async signUp(email: string, password: string){
+    try {
+      let userData = { email: email, password: password }
+      let result: any = await authService.signUp(userData)
+      // createUserWithEmailAndPassword(auth, email, password)
+      //   .then((userCredential: any) => {
+      //     const user = userCredential.user;
+      //     httpService.accessToken = userCredential.user.accessToken
+      //     setDoc(doc(db, "users", user.uid), {
+      //       email: user.email,
+      //       username: user.email,
+      //       isAdmin: false,
+      //       uid: user.uid,
+      //     }).then(() => {
+      //       navigate("/");
+      //     });
+      //   })
+      //   .catch((error) => {
+      //     const errorCode = error.code;
+      //     const errorMessage = error.message;
+      //     console.log(errorMessage);
+      //   });
+    } catch (error) {
+      
+    }
+  }
+
   async logout() {
     try {
+      const { caffStore } = useStore();
       await signOut(auth)
       httpService.accessToken = ""
       this.isLoggedIn = false
@@ -67,6 +97,7 @@ export default class UserStore {
       this.user.userId = 0
       this.user.username = ""
       this.resetCart();
+      caffStore.resetCaff()
     } catch (error) {
       console.log(error)
     }
