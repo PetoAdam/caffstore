@@ -1,0 +1,6 @@
+{
+    "certificateSettings": {
+      "fileName": "backend/src/server/rest/localhost.pfx",
+      "password": "rootpassword"
+    }
+}
