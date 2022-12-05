@@ -11,7 +11,11 @@
     "kestrel": {
       "commandName": "Project",
       "nativeDebugging": true,
-      "applicationUrl": "http://0.0.0.0:5000"
+      "applicationUrl": "http://0.0.0.0:5000",
+      "environmentVariables": {
+      "GOOGLE_APPLICATION_CREDENTIALS": "/home/ubuntu/caffstore-secret/caff-store-firebase-adminsdk-lu9y2-53f4bdc1f6.json"
+      }
     }
+    
   }
 }

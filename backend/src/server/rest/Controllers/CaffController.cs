@@ -226,11 +226,11 @@ namespace CaffStore.REST.Controllers
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
-
+            
             if(newCaff.Name == null || newCaff.File == null){
                 return BadRequest();
             }
-
+            
             var userEmail = await Authorization.GetEmail(authorization);
             var dbCaff = new Dal.Caff()
             {

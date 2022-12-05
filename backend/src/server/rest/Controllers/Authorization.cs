@@ -33,7 +33,7 @@ namespace CaffStore.REST.Controllers
                 return Auth.BadToken;
             }
             var user = await FirebaseAuth.DefaultInstance.GetUserAsync(decodedToken.Uid);
-            FirestoreDb db = FirestoreDb.Create(API_KEY);
+            FirestoreDb db = FirestoreDb.Create("caff-store");
             CollectionReference collection = db.Collection("users");
             DocumentReference docRef = collection.Document(user.Uid);
             DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
@@ -91,6 +91,7 @@ namespace CaffStore.REST.Controllers
 
         private static async Task<FirebaseToken> DecodeToken(string auth_header)
         {
+            
             if(auth_header == null)
                 return null;
             string[] split = auth_header.Split(' ');
@@ -98,6 +99,7 @@ namespace CaffStore.REST.Controllers
                 return null;
             }
             string idToken = split[1];
+            
             FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
             return decodedToken;
         }
