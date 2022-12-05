@@ -17,18 +17,18 @@ export const getRequest = async (url: string) => {
 export const postRequest = async (url: string, content: any) => {
   const token = await auth.currentUser?.getIdToken(true);
 
-  const response = await fetch(url, {
+  let requestInit = {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       authorization: "Bearer " + token!,
     },
-    body: JSON.stringify({
-      content,
-    }),
-  });
-  return response;
+    body: JSON.stringify(content),
+  };
+
+  const response = await fetch(url, requestInit);
+  return await response.json();
 };
 
 export const putRequest = async (url: string, content: any) => {

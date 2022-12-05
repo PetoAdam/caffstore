@@ -47,8 +47,8 @@ export const Upload = () => {
         setFileError("");
         getBase64(file)
           .then((result) => {
-            console.log("File Is", file);
             console.log(result);
+
             setCaffFile(result as string);
           })
           .catch((err) => {
@@ -63,11 +63,10 @@ export const Upload = () => {
   const uploadCaff = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (name && fileError == "") {
-      let date = new Date();
       let caff: Caff = {
         id: 0,
         name: name,
-        date: date.toString(),
+        creationDate: new Date().toString(),
         file: caffFile,
         uploader: String(userStore.user?.username),
         uploaderId: userStore.user?.uid!,

@@ -1,9 +1,10 @@
 import { Box, Grid } from "@mui/material";
+import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { CaffProductComponent } from "../components/caffProductsComponent";
 import { useStore } from "../stores";
 
-export const Products = () => {
+export const Products = observer(() => {
   const { caffStore } = useStore();
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export const Products = () => {
         spacing={3}
         sx={{ margin: 0 }}
       >
-        {caffStore.caffs.map((caff, index) => (
+        {caffStore.caffs?.map((caff, index) => (
           <Grid item xs={12} md={6} lg={3} key={"caff" + index}>
             <CaffProductComponent caff={caff} />
           </Grid>
@@ -28,4 +29,4 @@ export const Products = () => {
       </Grid>
     </Box>
   );
-};
+});
