@@ -61,7 +61,7 @@ namespace CaffStore.REST.Controllers
             var dbComment = new Dal.Comment
             {
                 Text = newComment.Text,
-                CreationDate = newComment.CreationDate,
+                CreationDate = DateTime.Now,
                 UserId = await Authorization.GetUid(authorization),
                 CaffId = newComment.CaffId,
             };
