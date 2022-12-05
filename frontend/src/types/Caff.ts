@@ -1,8 +1,8 @@
 export type Comment = {
-  id: number,
+  id: number;
   userName: string;
-  userId: string,
-  creationDate: string,
+  userId: string;
+  creationDate: string;
   text: string;
   caffId: number;
 };
@@ -10,7 +10,7 @@ export type Comment = {
 export type Caff = {
   id: number;
   name: string;
-  date: string;
+  creationDate: string;
   file: any;
   uploader: string;
   comments?: Comment[];

@@ -1,9 +1,10 @@
 import { Box, Grid } from "@mui/material";
+import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { CaffProductComponent } from "../components/caffProductsComponent";
 import { useStore } from "../stores";
 
-export const Products = () => {
+export const Products = observer(() => {
   const { caffStore } = useStore();
 
   useEffect(() => {
@@ -28,4 +29,4 @@ export const Products = () => {
       </Grid>
     </Box>
   );
-};
+});

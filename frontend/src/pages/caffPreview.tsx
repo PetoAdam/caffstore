@@ -42,7 +42,7 @@ export const CaffPreview = observer(() => {
           userId: String(userStore.user?.uid),
           creationDate: String(new Date()),
           text: comment,
-          caffId: caff?.id
+          caffId: caff?.id,
         };
         console.log(newComment);
         await commentService.addComment(newComment);
@@ -115,7 +115,7 @@ export const CaffPreview = observer(() => {
                   Upload date:
                 </Typography>
                 <Typography gutterBottom variant="h4" component="div">
-                  {String(caff.date).split("T")[0]}
+                  {String(caff.creationDate).split("T")[0]}
                 </Typography>
               </Box>
             </CardContent>

@@ -20,15 +20,15 @@ export const postRequest = async (url: string, content: any) => {
   let requestInit = {
     method: "POST",
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'authorization': "Bearer " + token!
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token!,
     },
-    body: JSON.stringify(content)
-  }
+    body: JSON.stringify(content),
+  };
 
-  const response = await fetch(url, requestInit)
-  return await response.json()
+  const response = await fetch(url, requestInit);
+  return await response.json();
 };
 
 export const putRequest = async (url: string, content: any) => {

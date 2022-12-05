@@ -42,12 +42,7 @@ export const CaffProductComponent: React.FC<Props> = ({ caff, isAdmin }) => {
           to={`/products/${caff.id}`}
           style={{ textDecoration: "none", color: "black" }}
         >
-          <CardMedia
-            component="img"
-            width="140"
-            src={caff.file}
-            alt={caff.name}
-          />
+          <img src={caff.file} alt={caff.name} loading="eager" height="200" />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {caff.name}
