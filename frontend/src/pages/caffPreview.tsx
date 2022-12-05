@@ -35,15 +35,20 @@ export const CaffPreview = observer(() => {
     } else {
       setCommentError("");
       //todo - addComment - check this with backend
-      let newComment: Comment = {
-        id: 0,
-        author: String(userStore.user?.username),
-        comment: comment,
-      };
-      console.log(newComment);
-      await commentService.addComment(newComment);
-      await caffStore.getCaffs();
-      caffStore.getCaffById(parseInt(id!));
+      if (caff != undefined) {
+        let newComment: Comment = {
+          id: 0,
+          userName: String(userStore.user?.username),
+          userId: String(userStore.user?.uid),
+          creationDate: String(new Date()),
+          text: comment,
+          caffId: caff?.id
+        };
+        console.log(newComment);
+        await commentService.addComment(newComment);
+        await caffStore.getCaffs();
+        caffStore.getCaffById(parseInt(id!));
+      }
     }
   };
 

@@ -1,7 +1,10 @@
 export type Comment = {
-  author: string;
-  comment: string;
-  id: number;
+  id: number,
+  userName: string;
+  userId: string,
+  creationDate: string,
+  text: string;
+  caffId: number;
 };
 
 export type Caff = {
