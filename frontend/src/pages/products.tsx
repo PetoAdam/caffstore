@@ -21,7 +21,7 @@ export const Products = observer(() => {
         spacing={3}
         sx={{ margin: 0 }}
       >
-        {caffStore.caffs?.map((caff, index) => (
+        {caffStore.caffs.map((caff, index) => (
           <Grid item xs={12} md={6} lg={3} key={"caff" + index}>
             <CaffProductComponent caff={caff} />
           </Grid>

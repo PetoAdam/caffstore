@@ -3,7 +3,7 @@ import { auth } from "../firebase";
 export const getRequest = async (url: string) => {
   const token = await auth.currentUser?.getIdToken(true);
 
-  const response = await fetch(url, {
+  const response = await fetch("http://127.0.0.1:5173/" + url, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -27,14 +27,14 @@ export const postRequest = async (url: string, content: any) => {
     body: JSON.stringify(content),
   };
 
-  const response = await fetch(url, requestInit);
+  const response = await fetch("http://127.0.0.1:5173/" + url, requestInit);
   return await response.json();
 };
 
 export const putRequest = async (url: string, content: any) => {
   const token = await auth.currentUser?.getIdToken(true);
 
-  const response = await fetch(url, {
+  const response = await fetch("http://127.0.0.1:5173/" + url, {
     method: "PUT",
     headers: {
       Accept: "application/json",
@@ -42,7 +42,7 @@ export const putRequest = async (url: string, content: any) => {
       authorization: "Bearer " + token!,
     },
     body: JSON.stringify({
-      content,
+      content: content,
     }),
   });
   return response;
@@ -51,7 +51,7 @@ export const putRequest = async (url: string, content: any) => {
 export const deleteRequest = async (url: string) => {
   const token = await auth.currentUser?.getIdToken(true);
 
-  const response = await fetch(url, {
+  const response = await fetch("http://127.0.0.1:5173/" + url, {
     method: "PUT",
     headers: {
       Accept: "application/json",

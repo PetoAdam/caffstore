@@ -47,7 +47,6 @@ export const CaffPreview = observer(() => {
         console.log(newComment);
         await commentService.addComment(newComment);
         await caffStore.getCaffs();
-        caffStore.getCaffById(parseInt(id!));
       }
     }
   };
@@ -64,12 +63,7 @@ export const CaffPreview = observer(() => {
       >
         <Card sx={{ width: "70%" }}>
           <Box sx={{ display: "flex", flexDirection: "row", padding: 10 }}>
-            <CardMedia
-              component="img"
-              sx={{ width: 500 }}
-              src={caff.file}
-              alt={caff.name}
-            />
+            <CardMedia component="img" src={caff.file} alt={caff.name} />
             <CardContent
               sx={{
                 display: "flex",
