@@ -1,14 +1,22 @@
 import { Box, Grid } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CaffProductComponent } from "../components/caffProductsComponent";
 import { useStore } from "../stores";
 
 export const Products = observer(() => {
   const { caffStore } = useStore();
 
+  const effectRan = useRef(false);
+
   useEffect(() => {
-    caffStore.getCaffs();
+    if (!effectRan.current) {
+      caffStore.getCaffs();
+    }
+
+    return () => {
+      effectRan.current = true;
+    };
   }, []);
 
   return (
@@ -21,7 +29,7 @@ export const Products = observer(() => {
         spacing={3}
         sx={{ margin: 0 }}
       >
-        {caffStore.caffs?.map((caff, index) => (
+        {caffStore.caffs.map((caff, index) => (
           <Grid item xs={12} md={6} lg={3} key={"caff" + index}>
             <CaffProductComponent caff={caff} />
           </Grid>

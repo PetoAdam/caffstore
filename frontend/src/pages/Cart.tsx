@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { CartItem } from "../components/cartItem";
+import { caffService } from "../services/caffService";
 import { useStore } from "../stores";
 
 export const Cart = observer(() => {
@@ -18,11 +19,14 @@ export const Cart = observer(() => {
 
   const onCheckout = () => {
     // todo - download - check this with backend
-    userStore.cart.forEach((caff) => {
+    userStore.cart.forEach(async (caff) => {
       try {
+        const downloadFile = await caffService.getDownloadCaff(caff.id);
+        console.log(downloadFile.file);
+
         const a = document.createElement("a");
         a.download = `${caff.name}.caff`;
-        a.href = caff.file;
+        a.href = downloadFile.file;
         a.click();
       } catch (error) {
         console.log(error);

@@ -4,6 +4,8 @@ import { makePersistable, PersistStoreMap } from "mobx-persist-store";
 import { db } from "../firebase";
 import { caffService } from "../services/caffService";
 import { Caff, caffMock, caffMock2 } from "../types/Caff";
+import { toJS } from "mobx";
+import { extendObservable } from "mobx";
 
 export default class CaffStore {
   caffs: Caff[] = [];
@@ -11,7 +13,7 @@ export default class CaffStore {
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
 
-    /*const persist = () => {
+    const persist = () => {
       makePersistable(this, {
         name: "caffStore",
         properties: ["caffs"],
@@ -25,30 +27,29 @@ export default class CaffStore {
     if (persistedStore) {
       persistedStore.stopPersisting();
     }
-    persist();*/
+    persist();
   }
 
   async getUserName(caffIndex: number) {
     const docRef = doc(db, "users", this.caffs[caffIndex].uploaderId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      if (docSnap.data()?.username)
-        this.caffs[caffIndex].uploader = docSnap.data()?.username;
+      if (docSnap.data()?.username) return docSnap.data()?.username;
     }
   }
 
   async getCaffs() {
-    const result = (await caffService.getCaffs()) as Caff[];
+    const result = toJS(await caffService.getCaffs());
 
-    this.caffs = result;
-    this.caffs.map(async (caff, index) => {
-      console.log(index, caff.name);
-
-      await this.getUserName(index);
-      //this.caffs.push(caff);
-    });
-
-    console.log(this.caffs);
+    if (result) {
+      result.map(async (caff, index) => {
+        if (!caff.uploader)
+          result[index].uploader = await this.getUserName(index);
+      });
+      this.caffs = result;
+    } else {
+      this.caffs = [];
+    }
   }
 
   getCaffById(id: number) {

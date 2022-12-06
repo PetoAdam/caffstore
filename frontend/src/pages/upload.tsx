@@ -13,7 +13,7 @@ import { Caff } from "../types/Caff";
 import { caffService } from "../services/caffService";
 
 export const Upload = () => {
-  const { userStore } = useStore();
+  const { userStore, caffStore } = useStore();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -73,8 +73,9 @@ export const Upload = () => {
       };
       console.log(caff);
       // TODO - upload caff - check with backend
-      let casesRes = await caffService.addCaff(caff);
-      console.log(casesRes);
+      await caffService.addCaff(caff);
+      await caffStore.getCaffs();
+      navigate("/products");
     }
   };
 

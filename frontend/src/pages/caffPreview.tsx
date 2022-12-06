@@ -12,19 +12,22 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react-lite";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CommentComponent } from "../components/commentComponent";
 import { useStore } from "../stores";
 import { Comment } from "../types/Caff";
 import { commentService } from "../services/commentService";
 import ErrorPage from "./error";
+import { caffService } from "../services/caffService";
 
 export const CaffPreview = observer(() => {
   const { id } = useParams();
   const { caffStore, userStore } = useStore();
 
-  const caff = caffStore.getCaffById(parseInt(id!));
+  const [caff, setCaff] = useState(caffStore.getCaffById(parseInt(id!)));
+
+  const [disabled, setDisabled] = useState(false);
 
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState("");
@@ -33,22 +36,22 @@ export const CaffPreview = observer(() => {
     if (comment == "") {
       setCommentError("Before posting you have to write something!");
     } else {
+      setDisabled(true);
       setCommentError("");
       //todo - addComment - check this with backend
       if (caff != undefined) {
-        let newComment: Comment = {
-          id: 0,
-          userName: String(userStore.user?.username),
+        const newComment = {
           userId: String(userStore.user?.uid),
-          creationDate: String(new Date()),
           text: comment,
           caffId: caff?.id,
         };
         console.log(newComment);
         await commentService.addComment(newComment);
-        await caffStore.getCaffs();
-        caffStore.getCaffById(parseInt(id!));
+        setComment("");
+        setCaff(await caffService.getCaffById(parseInt(id!)));
+        caffStore.getCaffs();
       }
+      setDisabled(false);
     }
   };
 
@@ -64,12 +67,7 @@ export const CaffPreview = observer(() => {
       >
         <Card sx={{ width: "70%" }}>
           <Box sx={{ display: "flex", flexDirection: "row", padding: 10 }}>
-            <CardMedia
-              component="img"
-              sx={{ width: 500 }}
-              src={caff.file}
-              alt={caff.name}
-            />
+            <CardMedia component="img" src={caff.file} alt={caff.name} />
             <CardContent
               sx={{
                 display: "flex",
@@ -179,7 +177,7 @@ export const CaffPreview = observer(() => {
             textAlign: "right",
           }}
         >
-          <Button variant="contained" onClick={onComment}>
+          <Button variant="contained" onClick={onComment} disabled={disabled}>
             Comment
           </Button>
         </Box>
