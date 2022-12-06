@@ -28,7 +28,7 @@ export const postRequest = async (url: string, content: any) => {
   };
 
   const response = await fetch("http://127.0.0.1:5173/" + url, requestInit);
-  return await response.json();
+  return response;
 };
 
 export const putRequest = async (url: string, content: any) => {

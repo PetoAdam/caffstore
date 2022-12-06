@@ -71,11 +71,16 @@ export const Upload = () => {
         uploader: String(userStore.user?.username),
         uploaderId: userStore.user?.uid!,
       };
-      console.log(caff);
-      // TODO - upload caff - check with backend
-      await caffService.addCaff(caff);
-      await caffStore.getCaffs();
-      navigate("/products");
+
+      const response = (await caffService.addCaff(caff)) as Response;
+      console.log(response);
+
+      if (response.status === 201) {
+        await caffStore.getCaffs();
+        navigate("/products");
+      } else if (response.status === 500)
+        setFileError("something wen wrong, please try again");
+      else setFileError("this is not a valid caff file");
     }
   };
 

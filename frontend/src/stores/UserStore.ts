@@ -35,10 +35,19 @@ export default class UserStore {
   }
 
   async login(email: string, password: string) {
-    await signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      console.log(error.message);
-    });
-    await this.setIsLoggedIn(true);
+    const res = await signInWithEmailAndPassword(auth, email, password).catch(
+      (error) => {
+        console.log(error);
+        return false;
+      }
+    );
+    console.log("*", res);
+
+    if (res) return res;
+    else {
+      await this.setIsLoggedIn(true);
+      return res;
+    }
   }
 
   async logout() {

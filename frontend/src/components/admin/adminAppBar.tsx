@@ -24,16 +24,23 @@ export const AdminAppBar = observer(() => {
             </Link>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex" } }}>
-              <Link style={{ textDecoration: "none" }} to={"/admin/users"}>
-                <Button sx={{ my: 2, color: "white", display: "block" }}>
-                  Edit users
-                </Button>
-              </Link>
-              <Link style={{ textDecoration: "none" }} to={"/admin/products"}>
-                <Button sx={{ my: 2, color: "white", display: "block" }}>
-                  Edit products
-                </Button>
-              </Link>
+              {userStore.isLoggedIn && userStore.isAdmin && (
+                <>
+                  <Link style={{ textDecoration: "none" }} to={"/admin/users"}>
+                    <Button sx={{ my: 2, color: "white", display: "block" }}>
+                      Edit users
+                    </Button>
+                  </Link>
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to={"/admin/products"}
+                  >
+                    <Button sx={{ my: 2, color: "white", display: "block" }}>
+                      Edit products
+                    </Button>
+                  </Link>
+                </>
+              )}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>

@@ -66,8 +66,20 @@ export const CaffPreview = observer(() => {
         }}
       >
         <Card sx={{ width: "70%" }}>
-          <Box sx={{ display: "flex", flexDirection: "row", padding: 10 }}>
-            <CardMedia component="img" src={caff.file} alt={caff.name} />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              padding: 10,
+              alignItems: "center",
+            }}
+          >
+            <CardMedia
+              component="img"
+              src={caff.file}
+              alt={caff.name}
+              sx={{ height: 200, width: "auto" }}
+            />
             <CardContent
               sx={{
                 display: "flex",

@@ -21,17 +21,24 @@ type Props = {
   isAdmin?: boolean;
 };
 
-export const CaffProductComponent: React.FC<Props> = ({ caff, isAdmin }) => {
+enum alertTypes {
+  none,
+  success,
+  error,
+}
+
+export const CaffProductComponent: React.FC<Props> = ({ caff }) => {
   const { userStore } = useStore();
 
-  const [isAlertDisplayed, setIsAlertDisplayed] = useState(false);
+  const [isAlertDisplayed, setIsAlertDisplayed] = useState(alertTypes.none);
 
   const onClick = () => {
     const added = userStore.addToCart(caff);
 
-    if (!added) setIsAlertDisplayed(true);
+    if (!added) setIsAlertDisplayed(alertTypes.error);
+    else setIsAlertDisplayed(alertTypes.success);
     setTimeout(() => {
-      setIsAlertDisplayed(false);
+      setIsAlertDisplayed(alertTypes.none);
     }, 3000);
   };
 
@@ -47,9 +54,6 @@ export const CaffProductComponent: React.FC<Props> = ({ caff, isAdmin }) => {
             <Typography gutterBottom variant="h5" component="div">
               {caff.name}
             </Typography>
-            <Typography gutterBottom variant="h6" component="div">
-              {caff.uploader}
-            </Typography>
           </CardContent>
         </Link>
 
@@ -59,13 +63,17 @@ export const CaffProductComponent: React.FC<Props> = ({ caff, isAdmin }) => {
           </Button>
         </CardActions>
       </Card>
-      {isAlertDisplayed && (
+      {isAlertDisplayed !== alertTypes.none && (
         <Alert
           variant="outlined"
-          severity="warning"
+          severity={
+            isAlertDisplayed === alertTypes.error ? "warning" : "success"
+          }
           sx={{ position: "absolute", bottom: 50, left: 50 }}
         >
-          This caff is already in your cart
+          {isAlertDisplayed === alertTypes.error
+            ? "This caff is already in your cart"
+            : "Added"}
         </Alert>
       )}
     </>

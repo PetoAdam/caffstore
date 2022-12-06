@@ -35,11 +35,14 @@ export function SignIn() {
     if (userStore.isLoggedIn) navigate("/");
   }, []);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (email && password)
-      userStore.login(email, password).then(() => navigate("/"));
-    else if (!email) setEmailError("Email is missing");
+    if (email && password) {
+      const res = await userStore.login(email, password);
+
+      if (res) navigate("/");
+      else setEmailError("user not found");
+    } else if (!email) setEmailError("Email is missing");
     if (!password) setPasswordError("Password or RePassword is missing");
   };
 

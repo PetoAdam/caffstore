@@ -29,17 +29,18 @@ export const CustomerAppBar = observer(() => {
             </Link>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex" } }}>
-              {pages.map((page) => (
-                <Link
-                  style={{ textDecoration: "none" }}
-                  to={`/${page.toLowerCase()}`}
-                  key={page}
-                >
-                  <Button sx={{ my: 2, color: "white", display: "block" }}>
-                    {page}
-                  </Button>
-                </Link>
-              ))}
+              {userStore.isLoggedIn &&
+                pages.map((page) => (
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to={`/${page.toLowerCase()}`}
+                    key={page}
+                  >
+                    <Button sx={{ my: 2, color: "white", display: "block" }}>
+                      {page}
+                    </Button>
+                  </Link>
+                ))}
             </Box>
 
             <Box sx={{ flexGrow: 0, flexDirection: "row", display: "flex" }}>
