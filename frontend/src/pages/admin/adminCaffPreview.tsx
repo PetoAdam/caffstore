@@ -14,7 +14,7 @@ import {
 import { observer } from "mobx-react-lite";
 
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CommentComponent } from "../../components/commentComponent";
 import { caffService } from "../../services/caffService";
 import { commentService } from "../../services/commentService";
@@ -25,21 +25,29 @@ import ErrorPage from "../error";
 export const AdminCaffPreview = observer(() => {
   const { id } = useParams();
   const { caffStore, userStore } = useStore();
-  const caff = caffStore.getCaffById(parseInt(id!));
+  const navigate = useNavigate();
+
+  const [caff, setCaff] = useState(caffStore.getCaffById(parseInt(id!)));
+
+  const [disabled, setDisabled] = useState(false);
 
   const [caffName, setCaffName] = useState(caff?.name);
   const [caffUploader, setCaffUploader] = useState(caff?.uploader);
 
-  const onDeleteComment = async (id: number) => {
+  const onDeleteComment = async (commentId: number) => {
     //TODO - delete comment - check with backend
-    let deletedComment = await commentService.deleteComment(id);
-    console.log(deletedComment);
+    setDisabled(true);
+    let deletedComment = await commentService.deleteComment(commentId);
+    setCaff(await caffService.getCaffById(parseInt(id!)));
+    caffStore.getCaffs();
+    setDisabled(false);
   };
 
   const deleteCaff = async () => {
     //TODO - delete caff - chack with backend
     if (caff != undefined) {
-      let deletedCaff = await caffService.deleteCaff(caff.id);
+      await caffService.deleteCaff(caff.id);
+      navigate("/admin/products");
     }
   };
 
@@ -50,17 +58,17 @@ export const AdminCaffPreview = observer(() => {
       caffName != undefined &&
       caffUploader != undefined
     ) {
-      const newCaff: Caff = {
+      const newCaff = {
         id: 0,
         name: caffName,
         creationDate: caff?.creationDate,
-        file: caff?.file,
         uploader: caffUploader,
         comments: caff?.comments,
         uploaderId: caff.uploaderId,
       };
 
       let modifiedCaff = await caffService.modifyCaff(caff?.id, newCaff);
+      caffStore.getCaffs();
       console.log(modifiedCaff);
     }
   };
@@ -113,6 +121,7 @@ export const AdminCaffPreview = observer(() => {
                 defaultValue={caffUploader}
                 size="small"
                 sx={rowStyle}
+                disabled
                 label="Uploader name"
                 onChange={handleCaffUploaderChange}
               />
@@ -170,6 +179,7 @@ export const AdminCaffPreview = observer(() => {
                   width: 100,
                   alignSelf: "flex-end",
                 }}
+                disabled={disabled}
                 onClick={() => onDeleteComment(comment.id)}
               >
                 Delete

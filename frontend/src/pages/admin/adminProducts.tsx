@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { AdminCaffProductComponent } from "../../components/admin/adminCaffProductComponent";
 import { CaffProductComponent } from "../../components/caffProductsComponent";
@@ -8,8 +8,16 @@ import { useStore } from "../../stores";
 export const EditProducts = () => {
   const { caffStore } = useStore();
 
+  const effectRan = useRef(false);
+
   useEffect(() => {
-    caffStore.getCaffs();
+    if (!effectRan.current) {
+      caffStore.getCaffs();
+    }
+
+    return () => {
+      effectRan.current = true;
+    };
   }, []);
 
   return (

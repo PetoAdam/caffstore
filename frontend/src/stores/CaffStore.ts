@@ -34,8 +34,7 @@ export default class CaffStore {
     const docRef = doc(db, "users", this.caffs[caffIndex].uploaderId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      if (docSnap.data()?.username)
-        this.caffs[caffIndex].uploader = docSnap.data()?.username;
+      if (docSnap.data()?.username) return docSnap.data()?.username;
     }
   }
 
@@ -43,13 +42,11 @@ export default class CaffStore {
     const result = toJS(await caffService.getCaffs());
 
     if (result) {
-      if (result !== this.caffs) {
-        this.caffs = result;
-        this.caffs.map(async (caff, index) => {
-          //this.caffs.push(caff);
-          await this.getUserName(index);
-        });
-      }
+      result.map(async (caff, index) => {
+        if (!caff.uploader)
+          result[index].uploader = await this.getUserName(index);
+      });
+      this.caffs = result;
     } else {
       this.caffs = [];
     }

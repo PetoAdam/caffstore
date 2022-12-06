@@ -1,22 +1,38 @@
-import { getRequest, postRequest } from "./httpService";
+import { deleteRequest, getRequest, postRequest } from "./httpService";
 import { Comment } from "../types/Caff";
 
 class CommentService {
   async getComments(caffId: string) {
-    const response = await getRequest("api/Comments/" + caffId);
-    const data = (await response.json()) as Comment[];
+    const response = await getRequest("api/Comments/" + caffId).catch(
+      (error) => {
+        console.log(error);
+        return;
+      }
+    );
+    const data = (await response!.json()) as Comment[];
 
     return data;
   }
-  async addComment(comment: Comment) {
-    const response = await postRequest("api/Comments", comment);
-    const data = (await response.json()) as Comment;
 
-    return data;
+  async addComment(comment: any) {
+    const response = await postRequest("api/comments", comment).catch(
+      (error) => {
+        console.log(error);
+        return;
+      }
+    );
+    return response;
   }
+
   async deleteComment(id: number) {
-    const response = await getRequest("api/Comments/" + id);
-    const data = await response.json();
+    const response = await deleteRequest("api/Comments/" + id).catch(
+      (error) => {
+        console.log(error);
+        return;
+      }
+    );
+    console.log(response);
+    const data = await response!.json();
 
     return data;
   }

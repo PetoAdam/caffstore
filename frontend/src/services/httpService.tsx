@@ -41,9 +41,7 @@ export const putRequest = async (url: string, content: any) => {
       "Content-Type": "application/json",
       authorization: "Bearer " + token!,
     },
-    body: JSON.stringify({
-      content: content,
-    }),
+    body: JSON.stringify(content),
   });
   return response;
 };
@@ -52,7 +50,7 @@ export const deleteRequest = async (url: string) => {
   const token = await auth.currentUser?.getIdToken(true);
 
   const response = await fetch("http://127.0.0.1:5173/" + url, {
-    method: "PUT",
+    method: "DELETE",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

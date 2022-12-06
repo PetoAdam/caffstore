@@ -73,9 +73,9 @@ export const Upload = () => {
       };
       console.log(caff);
       // TODO - upload caff - check with backend
-      let casesRes = await caffService.addCaff(caff);
+      await caffService.addCaff(caff);
       await caffStore.getCaffs();
-      console.log(casesRes);
+      navigate("/products");
     }
   };
 
