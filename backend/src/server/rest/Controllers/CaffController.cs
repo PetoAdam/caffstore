@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CaffStore.REST.Dal;
 using CaffStore.REST.Models;
 using Microsoft.AspNetCore.Authorization;
+using CaffStore.REST.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,7 +43,7 @@ namespace CaffStore.REST.Controllers
                 caffPreview.Id = caff.Id;
                 caffPreview.Name = caff.Name;
                 caffPreview.CreationDate = caff.CreationDate;
-                caffPreview.File = caffPreview.Parse(caff.CaffFile);
+                caffPreview.File = CaffParser.Parse(caff.CaffFile);
                 caffPreview.UploaderId = caff.UploaderId;
                 caffPreview.Comments = new List<Models.Comment>();
                 foreach(var comment in dbContext.Comments.AsQueryable().Where(c => c.CaffId == caff.Id))
@@ -75,7 +76,7 @@ namespace CaffStore.REST.Controllers
             caffPreview.Id = caff.Id;
             caffPreview.Name = caff.Name;
             caffPreview.CreationDate = caff.CreationDate;
-            caffPreview.File = caffPreview.Parse(caff.CaffFile);
+            caffPreview.File = CaffParser.Parse(caff.CaffFile);
             caffPreview.UploaderId = caff.UploaderId;
             caffPreview.Comments = new List<Models.Comment>();
             foreach(var comment in dbContext.Comments.AsQueryable().Where(c => c.CaffId == caff.Id))
@@ -103,7 +104,7 @@ namespace CaffStore.REST.Controllers
                 caffPreview.Id = caff.Id;
                 caffPreview.Name = caff.Name;
                 caffPreview.CreationDate = caff.CreationDate;
-                caffPreview.File = caffPreview.Parse(caff.CaffFile);
+                caffPreview.File = CaffParser.Parse(caff.CaffFile);
                 caffPreview.UploaderId = caff.UploaderId;
                 caffPreview.Comments = new List<Models.Comment>();
                 foreach(var comment in dbContext.Comments.AsQueryable().Where(c => c.CaffId == caff.Id))
@@ -134,7 +135,7 @@ namespace CaffStore.REST.Controllers
                 caffPreview.Id = caff.Id;
                 caffPreview.Name = caff.Name;
                 caffPreview.CreationDate = caff.CreationDate;
-                caffPreview.File = caffPreview.Parse(caff.CaffFile);
+                caffPreview.File = CaffParser.Parse(caff.CaffFile);
                 caffPreview.UploaderId = caff.UploaderId;
                 caffPreview.Comments = new List<Models.Comment>();
                 foreach(var comment in dbContext.Comments.AsQueryable().Where(c => c.CaffId == caff.Id))
@@ -168,34 +169,26 @@ namespace CaffStore.REST.Controllers
         // PUT api/caffs/5
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult> Modify([FromRoute] int id, [FromBody] Models.NewCaff updated, [FromHeader] string authorization)
+        public async Task<ActionResult> Modify(int id, [FromBody] Models.NewCaff updated, [FromHeader] string authorization)
         {
             var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth != Authorization.Auth.Admin){
                 return Unauthorized();
             }
-
-            if(updated.Name == null || updated.File == null){
+            
+            if(updated.Name == null || updated.UploaderId == null){
                 return BadRequest();
             }
-
+            
             var dbProduct = await dbContext.Caffs.AsAsyncEnumerable().SingleOrDefaultAsync(p => p.Id == id);
 
             // If no instance with exists with given id, return
             if (dbProduct == null)
                 return NotFound();
 
-            // Modify data
-
-            // Modifications -> What modifications do we allow?
+            // Modifications
             dbProduct.Name = updated.Name;
-            //dbProduct.Date = DateTime.Now;
-            dbProduct.CaffFile = Services.Base64Converter.ConvertToByteArray(updated.File);
-
-            // Change the owner of the CAFF file
             dbProduct.UploaderId = updated.UploaderId;
-
-
 
             // Save to DB
             try
@@ -231,12 +224,19 @@ namespace CaffStore.REST.Controllers
                 return BadRequest();
             }
             
+            // Authenticate caff file
+            var caffFile = Services.Base64Converter.ConvertToByteArray(newCaff.File);
+            if(CaffParser.Parse(caffFile) == null)
+            {
+                return BadRequest();
+            }
+
             var userEmail = await Authorization.GetEmail(authorization);
             var dbCaff = new Dal.Caff()
             {
                 Name = newCaff.Name,
                 CreationDate = DateTime.Now,
-                CaffFile = Services.Base64Converter.ConvertToByteArray(newCaff.File),
+                CaffFile = caffFile,
                 UploaderId = await Authorization.GetUid(authorization)
             };
 
@@ -266,6 +266,7 @@ namespace CaffStore.REST.Controllers
             {
                 dbContext.Comments.RemoveRange(messages);
             }
+            await dbContext.SaveChangesAsync();
             dbContext.Caffs.Remove(caff);
             await dbContext.SaveChangesAsync();
 

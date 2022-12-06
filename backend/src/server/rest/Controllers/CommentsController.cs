@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CaffStore.REST.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/comments")]
     [ApiController]
     public class CommentsController : ControllerBase
     {
@@ -46,18 +46,17 @@ namespace CaffStore.REST.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Models.Comment>> PostComment(NewComment newComment, [FromHeader] string authorization)
+        public async Task<ActionResult<Models.Comment>> PostComment([FromBody] NewComment newComment, [FromHeader] string authorization)
         {
             var auth = await Authorization.IsAdmin(authorization, dbContext);
             if(auth == Authorization.Auth.BadToken){
                 return Unauthorized();
             }
-
+            
             if(newComment.Text == null || newComment.CaffId <= 0){
                 return BadRequest();
             }
 
-            var userEmail = await Authorization.GetEmail(authorization);
             var dbComment = new Dal.Comment
             {
                 Text = newComment.Text,

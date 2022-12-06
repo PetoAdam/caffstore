@@ -100,7 +100,15 @@ namespace CaffStore.REST.Controllers
             }
             string idToken = split[1];
             
-            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
+            FirebaseToken decodedToken;
+            try {
+                decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
+            }
+            catch(Exception ex){
+                System.Diagnostics.Debug.WriteLine(ex);
+                return null;
+            }
+            
             return decodedToken;
         }
         
