@@ -3,12 +3,12 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyAfdUUIzsM11swGfMVGyei-qLCs0FdV6es",
-  authDomain: "caff-store.firebaseapp.com",
-  projectId: "caff-store",
-  storageBucket: "caff-store.appspot.com",
-  messagingSenderId: "23101280010",
-  appId: "1:23101280010:web:8e6227fb29a80ca984f4f3",
+  apiKey: import.meta.env.VITE_apiKey,
+  authDomain: import.meta.env.VITE_authDomain,
+  projectId: import.meta.env.VITE_projectId,
+  storageBucket: import.meta.env.VITE_storageBucket,
+  messagingSenderId: import.meta.env.VITE_messagingSenderId,
+  appId: import.meta.env.VITE_appId,
 };
 
 export const app = initializeApp(firebaseConfig);
