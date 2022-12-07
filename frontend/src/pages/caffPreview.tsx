@@ -88,7 +88,7 @@ export const CaffPreview = observer(() => {
                 paddingTop: 5,
               }}
             >
-              <Typography gutterBottom variant="h1" component="div">
+              <Typography gutterBottom variant="h3" component="div">
                 {caff.name}
               </Typography>
               <Box
@@ -100,13 +100,13 @@ export const CaffPreview = observer(() => {
               >
                 <Typography
                   gutterBottom
-                  variant="h4"
+                  variant="h5"
                   component="div"
                   sx={{ paddingRight: 2 }}
                 >
                   Uploader:
                 </Typography>
-                <Typography gutterBottom variant="h4" component="div">
+                <Typography gutterBottom variant="h5" component="div">
                   {caff.uploader}
                 </Typography>
               </Box>
@@ -118,13 +118,13 @@ export const CaffPreview = observer(() => {
               >
                 <Typography
                   gutterBottom
-                  variant="h4"
+                  variant="h5"
                   component="div"
                   sx={{ paddingRight: 2 }}
                 >
                   Upload date:
                 </Typography>
-                <Typography gutterBottom variant="h4" component="div">
+                <Typography gutterBottom variant="h5" component="div">
                   {String(caff.creationDate).split("T")[0]}
                 </Typography>
               </Box>

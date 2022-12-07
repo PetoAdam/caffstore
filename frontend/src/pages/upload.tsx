@@ -41,21 +41,27 @@ export const Upload = () => {
     if (event.target.files != null) {
       let file = event.target.files[0];
       let props = file.name.split(".");
-      let extension = props[props.length - 1];
-      console.log(extension);
-      if (extension.toLowerCase() == "caff") {
-        setFileError("");
-        getBase64(file)
-          .then((result) => {
-            console.log(result);
+      if (file.name.includes("<"))
+        setFileError(
+          "You have to attach a file with a tag in it... please remove it"
+        );
+      else {
+        let extension = props[props.length - 1];
+        console.log(extension);
+        if (extension.toLowerCase() == "caff") {
+          setFileError("");
+          getBase64(file)
+            .then((result) => {
+              console.log(result);
 
-            setCaffFile(result as string);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        setFileError("You have to attach a file with 'caff' extension!");
+              setCaffFile(result as string);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          setFileError("You have to attach a file with 'caff' extension!");
+        }
       }
     }
   };

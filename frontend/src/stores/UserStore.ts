@@ -60,7 +60,6 @@ export default class UserStore {
 
   async setIsLoggedIn(login: boolean) {
     this.isLoggedIn = login;
-    this.setIsAdmin(false);
     this.setUser(undefined);
     if (login) {
       const user = auth.currentUser;
