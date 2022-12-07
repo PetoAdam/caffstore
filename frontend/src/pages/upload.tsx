@@ -38,6 +38,7 @@ export const Upload = () => {
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFileError("");
     if (event.target.files != null) {
       let file = event.target.files[0];
       let props = file.name.split(".");
@@ -67,6 +68,7 @@ export const Upload = () => {
   };
 
   const uploadCaff = async (event: React.FormEvent<HTMLFormElement>) => {
+    setFileError("");
     event.preventDefault();
     if (name && fileError == "") {
       let caff: Caff = {
