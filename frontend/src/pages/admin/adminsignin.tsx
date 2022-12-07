@@ -19,7 +19,7 @@ import { useStore } from "../../stores";
 import { useNavigate } from "react-router-dom";
 
 export function AdminSignIn() {
-  const { userStore } = useStore();
+  const { userStore, caffStore } = useStore();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -38,7 +38,10 @@ export function AdminSignIn() {
     if (email && password)
       userStore.login(email, password).then(() => {
         if (!userStore.isAdmin) setEmailError("You are not an admin");
-        else navigate("/admin");
+        else {
+          caffStore.getCaffs();
+          navigate("/admin");
+        }
       });
     else if (!email) setEmailError("Email is missing");
     if (!password) setPasswordError("Password or RePassword is missing");

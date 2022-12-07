@@ -29,8 +29,6 @@ class CaffService {
   }
 
   async modifyCaff(id: number, caff: any) {
-    console.log(caff);
-
     const response = await putRequest("api/caffs/" + id, caff).catch(
       (error) => {
         console.log(error);
@@ -56,9 +54,7 @@ class CaffService {
       return;
     });
 
-    const data = await response!.json();
-
-    return data;
+    return response;
   }
 
   async getDownloadCaff(caffId: number) {

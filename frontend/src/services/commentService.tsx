@@ -31,10 +31,8 @@ class CommentService {
         return;
       }
     );
-    console.log(response);
-    const data = await response!.json();
 
-    return data;
+    return response;
   }
 }
 

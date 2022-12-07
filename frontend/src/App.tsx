@@ -27,7 +27,7 @@ import { AdminCaffPreview } from "./pages/admin/adminCaffPreview";
 import { Upload } from "./pages/upload";
 
 const App = () => {
-  const { userStore } = useStore();
+  const { userStore, caffStore } = useStore();
 
   const [isAdmin, setIsAdmin] = useState(false);
 

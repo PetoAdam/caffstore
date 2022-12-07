@@ -19,7 +19,6 @@ import { CommentComponent } from "../../components/commentComponent";
 import { caffService } from "../../services/caffService";
 import { commentService } from "../../services/commentService";
 import { useStore } from "../../stores";
-import { Caff } from "../../types/Caff";
 import ErrorPage from "../error";
 
 export const AdminCaffPreview = observer(() => {
@@ -37,7 +36,7 @@ export const AdminCaffPreview = observer(() => {
   const onDeleteComment = async (commentId: number) => {
     //TODO - delete comment - check with backend
     setDisabled(true);
-    let deletedComment = await commentService.deleteComment(commentId);
+    await commentService.deleteComment(commentId);
     setCaff(await caffService.getCaffById(parseInt(id!)));
     caffStore.getCaffs();
     setDisabled(false);
@@ -46,6 +45,7 @@ export const AdminCaffPreview = observer(() => {
   const deleteCaff = async () => {
     //TODO - delete caff - chack with backend
     if (caff != undefined) {
+      caffStore.deleteCaff(caff);
       await caffService.deleteCaff(caff.id);
       navigate("/admin/products");
     }
@@ -94,10 +94,17 @@ export const AdminCaffPreview = observer(() => {
         }}
       >
         <Card sx={{ width: "70%" }}>
-          <Box sx={{ display: "flex", flexDirection: "row", padding: 10 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              padding: 10,
+              alignItems: "center",
+            }}
+          >
             <CardMedia
               component="img"
-              sx={{ width: 500 }}
+              sx={{ height: 200, width: "auto" }}
               src={caff.file}
               alt={caff.name}
             />

@@ -41,21 +41,27 @@ export const Upload = () => {
     if (event.target.files != null) {
       let file = event.target.files[0];
       let props = file.name.split(".");
-      let extension = props[props.length - 1];
-      console.log(extension);
-      if (extension.toLowerCase() == "caff") {
-        setFileError("");
-        getBase64(file)
-          .then((result) => {
-            console.log(result);
+      if (file.name.includes("<"))
+        setFileError(
+          "You have to attach a file with a tag in it... please remove it"
+        );
+      else {
+        let extension = props[props.length - 1];
+        console.log(extension);
+        if (extension.toLowerCase() == "caff") {
+          setFileError("");
+          getBase64(file)
+            .then((result) => {
+              console.log(result);
 
-            setCaffFile(result as string);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        setFileError("You have to attach a file with 'caff' extension!");
+              setCaffFile(result as string);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          setFileError("You have to attach a file with 'caff' extension!");
+        }
       }
     }
   };
@@ -71,11 +77,16 @@ export const Upload = () => {
         uploader: String(userStore.user?.username),
         uploaderId: userStore.user?.uid!,
       };
-      console.log(caff);
-      // TODO - upload caff - check with backend
-      await caffService.addCaff(caff);
-      await caffStore.getCaffs();
-      navigate("/products");
+
+      const response = (await caffService.addCaff(caff)) as Response;
+      console.log(response);
+
+      if (response.status === 201) {
+        await caffStore.getCaffs();
+        navigate("/products");
+      } else if (response.status === 500)
+        setFileError("something wen wrong, please try again");
+      else setFileError("this is not a valid caff file");
     }
   };
 

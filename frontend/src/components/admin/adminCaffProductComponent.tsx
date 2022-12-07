@@ -21,8 +21,6 @@ type Props = {
 };
 
 export const AdminCaffProductComponent: React.FC<Props> = ({ caff }) => {
-  const { userStore } = useStore();
-
   return (
     <Link
       to={`/admin/products/${caff.id}`}
@@ -38,9 +36,6 @@ export const AdminCaffProductComponent: React.FC<Props> = ({ caff }) => {
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {caff.name}
-          </Typography>
-          <Typography gutterBottom variant="h6" component="div">
-            {caff.uploader}
           </Typography>
         </CardContent>
       </Card>

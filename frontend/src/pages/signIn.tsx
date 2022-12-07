@@ -21,7 +21,7 @@ import { useStore } from "../stores";
 import { useNavigate } from "react-router-dom";
 
 export function SignIn() {
-  const { userStore } = useStore();
+  const { userStore, caffStore } = useStore();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -35,11 +35,16 @@ export function SignIn() {
     if (userStore.isLoggedIn) navigate("/");
   }, []);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (email && password)
-      userStore.login(email, password).then(() => navigate("/"));
-    else if (!email) setEmailError("Email is missing");
+    if (email && password) {
+      const res = await userStore.login(email, password);
+
+      if (res) {
+        caffStore.getCaffs();
+        navigate("/");
+      } else setEmailError("user not found");
+    } else if (!email) setEmailError("Email is missing");
     if (!password) setPasswordError("Password or RePassword is missing");
   };
 
